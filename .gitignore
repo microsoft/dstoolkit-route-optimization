@@ -354,3 +354,6 @@ MigrationBackup/
 
 # vscode settings
 .vscode
+
+# tmp folder 
+.tmp
