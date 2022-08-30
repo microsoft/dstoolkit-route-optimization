@@ -3,6 +3,7 @@
 
 import pandas as pd
 import collections
+import uuid
 import math
 from datetime import datetime
 
@@ -188,8 +189,6 @@ class ModelInput:
     #     for truck_type in truck_types:
 
         all_trucks = {}
-
-        truck_id = 1
             
         # calculate the minimum number of trucks we need to deliver the package without sharing
         for truck_type in truck_types:
@@ -204,6 +203,7 @@ class ModelInput:
                 min_num_by_area = math.ceil(sum(package.area for package in packages) / (truck_type.area_capacity))
                 min_num_by_capacity = math.ceil(sum(package.weight for package in packages) / truck_type.weight_capacity)
 
+                # Heuristic: bigger truck is more cost efficient, we should use bigger truck more
                 if truck_type.id == 12.5 or truck_type.id == 9.6:
                     min_num = int(max(min_num_by_area, min_num_by_capacity) * discount_factor)
 
@@ -215,12 +215,10 @@ class ModelInput:
 
                 for i in range(0, min_num):
                     truck = Truck()
-                    truck.id = truck_id
+                    truck.id = uuid.uuid4()
                     truck.type = truck_type
 
-                    all_trucks[truck_id] = truck
-                    truck_id += 1
-
+                    all_trucks[truck.id] = truck
                 
         return all_trucks
 
@@ -249,12 +247,14 @@ class ModelInput:
 
 class ModelResult:
 
-    package_assigned_truck = None
-    truck_assigned_route = None
-    truck_assigned_packages = None
-    same_truck_packages = None
-    package_start_time = None
-    package_arrival_time = None
+    package_assigned_truck = {}
+    truck_assigned_route = collections.defaultdict(list)
+    truck_assigned_packages = collections.defaultdict(list)
+    package_start_time = {}
+    package_arrival_time = {}
 
     def __init__(self):
+        pass
+
+    def toScheduleDF(self):
         pass

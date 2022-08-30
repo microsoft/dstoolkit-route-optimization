@@ -113,8 +113,13 @@ class Model:
         truck_assigned_route = collections.defaultdict(list)
         for t_id in truck_assigned_packages:
             stops = {}
-            for p_id in truck_assigned_packages[t_id]:
 
+            first_package = True
+
+            for p_id in truck_assigned_packages[t_id]:
+                
+                # Assumption: All packages have the same source
+                source = self.model_input.all_packages[p_id].source
                 package_stop = self.solver.Value(self.package_stops[p_id])
                 if package_stop in stops:
                     assert(self.model_input.all_packages[p_id].destination == stops[package_stop])
@@ -125,7 +130,7 @@ class Model:
 
             route = sorted(route, key=lambda x: x[0])
             
-            truck_assigned_route[t_id] = [destination for stop, destination in route]
+            truck_assigned_route[t_id] = [source] + [destination for stop, destination in route]
 
         package_start_time = {}
 
