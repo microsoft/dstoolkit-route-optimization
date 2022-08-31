@@ -21,6 +21,16 @@ class Model:
         self.solver = cp_model.CpSolver()
 
     def setObjective(self, objective):
+        """Function that sets the objective of the model.
+
+        Args:
+            objective: The tyoe of objective.
+            
+        Returns:
+            None
+
+        """
+
         if objective == 'Cost':
             self.setCostObjective()
 
@@ -29,6 +39,15 @@ class Model:
             sys.exit(1)
 
     def setConstraints(self):
+        """Function that sets the constraints of the model.
+
+        Args:
+            None
+            
+        Returns:
+            None
+
+        """
         self.setDangerTypeConstraint()
         self.setFixedSrcConstraint()
         self.setPackageTimeWindowConstraint()
@@ -39,9 +58,27 @@ class Model:
         self.setTruckWeightCapacityConstraint()
 
     def setHints(self, *args):
+        """Function that sets the search hints of the model.
+
+        Args:
+            None
+            
+        Returns:
+            None
+
+        """
         pass
 
     def solve(self, max_time_in_seconds=60):
+        """Function that solves the optimization problem.
+
+        Args:
+            max_time_in_seconds: the maximum search time of the solver.
+            
+        Returns:
+            None
+
+        """
         import multiprocessing
 
         class SolutionPrinter(cp_model.CpSolverSolutionCallback):
@@ -89,12 +126,27 @@ class Model:
             logger.info("The status of the model is unknown because a search limit was reached.")
 
     def setModelInput(self, model_input):
+        """Function that sets the model input object.
+
+        Args:
+            model_input: the object that stores the model input.
+            
+        Returns:
+            None
+
+        """
         self.model_input = model_input
 
     def getModelResult(self):
-        '''
-        Get the final route and package planning after problem is solved.
-        '''
+        """Function that gets the final route schedule after problem is solved.
+
+        Args:
+            None
+            
+        Returns:
+            model_result: the result of the model
+
+        """
 
         package_assigned_truck = {}
     
@@ -143,6 +195,8 @@ class Model:
             package_arrival_time[key] = datetime.fromtimestamp(self.solver.Value(self.package_arrival_time[key]))
       
         self.model_result = ModelResult()
+        self.model_result.all_packages = self.model_input.all_packages
+        self.model_result.all_trucks = self.model_input.all_trucks
         self.model_result.package_assigned_truck = package_assigned_truck
         self.model_result.truck_assigned_route = truck_assigned_route
         self.model_result.truck_assigned_packages = truck_assigned_packages
@@ -152,9 +206,27 @@ class Model:
         return self.model_result
 
     def getObjectiveValue(self):
+        """Function that gets objective value after problem is solved.
+
+        Args:
+            None
+            
+        Returns:
+            the objevtive value.
+
+        """
         return self.solver.ObjectiveValue()
 
     def createVariables(self):
+        """Function that creates necessary global decision variables.
+
+        Args:
+            None
+            
+        Returns:
+            None
+
+        """
 
         logger.info("Creating variables")
 
@@ -235,9 +307,27 @@ class Model:
         self.countVariables()
 
     def countVariables(self):
+        """Function that counts how many decision variables and constraints being created.
+
+        Args:
+            None
+            
+        Returns:
+            None
+
+        """
         logger.info(f"Number of Variables:{str(vars(self.model)).count('variables')}; Number of Constraints: {str(vars(self.model)).count('constraints')}")
 
     def validateInput(self):
+        """Function that validates if there are any violation of the constraints before modeling.
+
+        Args:
+            None
+            
+        Returns:
+            None
+
+        """
         # Check if there is any constraint violation before modeling
             
         # Check if the truck is fast enough to get to the destination
@@ -264,6 +354,15 @@ class Model:
 
 
     def setCostObjective(self):
+        """Function that sets the cost as objective function.
+
+        Args:
+            None
+            
+        Returns:
+            None
+
+        """
 
         logger.info("Setting total cost as objective.")
 

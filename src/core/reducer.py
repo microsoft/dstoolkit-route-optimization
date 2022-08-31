@@ -11,14 +11,27 @@ class SearchSpaceReducer:
         pass
 
     def reduce1(self, model_input, threshold=0.95):
+        """Function to schedule package route by heuristic.
+           
+           Heuristic: 
+           Bigger truck is more cost effecient.
+           If packages from a single order can exceed 95% capacity of the biggest truck, 
+           then just use one biggest truck to deliver these packages
+
+        Args:
+            model_input: the object that stores the model input.
+            threshold: the threshold for the truck capacity.
+
+        Returns:
+            model_input_reduced: the object for reduced model input
+            model_result_partial: the partial scheduling for the identified packaged.
+
+        """
 
         model_result_partial = ModelResult()
         model_input_reduced = ModelInput()
 
-        # Heuristic: 
-        # Bigger truck is more cost effecient.
-        # If packages from a single order can exceed 95% capacity of the biggest truck, 
-        # then just use one biggest truck to deliver these packages
+
 
         same_order_packages = collections.defaultdict(list)
 
@@ -69,7 +82,7 @@ class SearchSpaceReducer:
                     # check if the packages are big enough
                     if (total_area > truck_type.area_capacity * threshold or 
                         total_weight > truck_type.weight_capacity * threshold):
-                        model_result_partial = self.addResult(candidate_packages, model_result_partial, model_input.distance_matrix, truck_type.speed)
+                        model_result_partial = self.addResult(candidate_packages, model_result_partial, model_input.distance_matrix, truck_type)
 
                         candidate_packages = []
                         total_area = 0
@@ -100,14 +113,25 @@ class SearchSpaceReducer:
         return model_input_reduced, model_result_partial
 
     def reduce2(self, model_input, threshold=0.95):
+        """Function to schedule package route by heuristic.
+           
+           Heuristic: 
+           Bigger truck is more cost effecient.
+           If packages to same destination can exceed 95% capacity of the biggest truck, 
+           then just use one biggest truck to deliver these packages
+
+        Args:
+            model_input: the object that stores the model input.
+            threshold: the threshold for the truck capacity.
+
+        Returns:
+            model_input_reduced: the object for reduced model input
+            model_result_partial: the partial scheduling for the identified packaged.
+
+        """
 
         model_result_partial = ModelResult()
         model_input_reduced = ModelInput()
-
-        # Heuristic: 
-        # Bigger truck is more cost effecient.
-        # If packages to same destination can exceed 95% capacity of the biggest truck, 
-        # then just use one biggest truck to deliver these packages
 
         same_destination_packages = collections.defaultdict(list)
 
@@ -182,7 +206,7 @@ class SearchSpaceReducer:
                     # check if the packages are big enough
                     if (total_area > truck_type.area_capacity * threshold or 
                         total_weight > truck_type.weight_capacity * threshold):
-                        model_result_partial = self.addResult(candidate_packages, model_result_partial, model_input.distance_matrix, truck_type.speed)
+                        model_result_partial = self.addResult(candidate_packages, model_result_partial, model_input.distance_matrix, truck_type)
 
                         candidate_packages = []
                         total_area = 0
@@ -212,28 +236,47 @@ class SearchSpaceReducer:
 
         return model_input_reduced, model_result_partial
 
-    def addResult(self, candidate_packages, model_result_partial, distance_matrix, truck_speed):
+    def addResult(self, candidate_packages, model_result_partial, distance_matrix, truck_type):
+        """Function to add new schedule result.
+        
+        Args:
+            candidate_packages: the list of packages to be delivered by the same truck
+            model_result_partial: the current partial scheduling.
+            distance_matrix: the matrix for storing distance between locations
+            truck_speed: the speed of the truck
 
+        Returns:
+            model_result_partial: the updated partial scheduling
+
+        """
         # All these packages will put in a single truck with the largest size
-        truck_id = uuid.uuid4()
+        truck = Truck()
+
+        truck.id = uuid.uuid4()
+        truck.type = truck_type
+        truck_speed = truck_type.speed
 
         first_package = True
 
         truck_start_time = max(p.available_time for p in candidate_packages)
         truck_stop_time = truck_start_time + int(distance_matrix.loc[candidate_packages[0].source][candidate_packages[0].destination]/truck_speed)
 
+        model_result_partial.all_trucks[truck.id] = truck
+
         for p in candidate_packages:
             p_id = (p.order_id, p.material_id, p.plate_id)
 
-            model_result_partial.package_assigned_truck[p_id] = truck_id
+            model_result_partial.all_packages[p_id] = p
+
+            model_result_partial.package_assigned_truck[p_id] = truck.id
 
             # Assumption: all package has the same source and destination
             if first_package:
-                model_result_partial.truck_assigned_route[truck_id].append(p.source)
-                model_result_partial.truck_assigned_route[truck_id].append(p.destination)
+                model_result_partial.truck_assigned_route[truck.id].append(p.source)
+                model_result_partial.truck_assigned_route[truck.id].append(p.destination)
                 first_package = False
 
-            model_result_partial.truck_assigned_packages[truck_id].append(p_id)
+            model_result_partial.truck_assigned_packages[truck.id].append(p_id)
             model_result_partial.package_start_time = truck_start_time
             model_result_partial.package_arrival_time = truck_stop_time
         
