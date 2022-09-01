@@ -43,5 +43,7 @@ class ModelTest(unittest.TestCase):
 
         model_result = ModelTest.model.getModelResult()
 
+        logger.info(f"Model Result: {model_result.toScheduleDF()}")
+
         assert(len(model_result.truck_assigned_packages) > 0)
 

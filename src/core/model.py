@@ -187,12 +187,12 @@ class Model:
         package_start_time = {}
 
         for key in self.package_start_time:
-            package_start_time[key] = datetime.fromtimestamp(self.solver.Value(self.package_start_time[key]))
+            package_start_time[key] = self.solver.Value(self.package_start_time[key])
 
         package_arrival_time = {}
 
         for key in self.package_arrival_time:
-            package_arrival_time[key] = datetime.fromtimestamp(self.solver.Value(self.package_arrival_time[key]))
+            package_arrival_time[key] = self.solver.Value(self.package_arrival_time[key])
       
         self.model_result = ModelResult()
         self.model_result.all_packages = self.model_input.all_packages

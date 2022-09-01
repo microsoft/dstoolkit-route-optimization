@@ -248,6 +248,10 @@ class ModelInput:
                 else:
                     min_num = max(min_num_by_area, min_num_by_capacity)
 
+                # We should spare at least one truck for this order
+                if min_num < 1:
+                    min_num = 1
+
                 for i in range(0, min_num):
                     truck = Truck()
                     truck.id = uuid.uuid4()
