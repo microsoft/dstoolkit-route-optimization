@@ -59,12 +59,12 @@ class PipelineTest(unittest.TestCase):
         # Write to files
         i = 0
         for model_input_partition in model_input_list:
-            model_input_partition_file = os.path.join(tmp_folder, f"model_input_partition_{i}.csv")
+            model_input_partition_file = os.path.join(tmp_folder, f"order_partition_{i}.csv")
             model_input_partition.toOrderDF().to_csv(model_input_partition_file, index=False)
             i += 1
 
         # Step 3 - Solve each smaller problems
-        model_input_partition_file_list = glob.glob(os.path.join(tmp_folder,'model_input_partition_*.csv'))
+        model_input_partition_file_list = glob.glob(os.path.join(tmp_folder,'order_partition_*.csv'))
         
         i = 0
         for partition_file in model_input_partition_file_list:
