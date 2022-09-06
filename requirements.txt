@@ -3,6 +3,7 @@ azureml-dataprep==1.44.0
 azureml-pipeline-core==1.44.0
 azureml-contrib-pipeline-steps==1.44.0
 azureml-widgets==1.44.0
+azure-cli==2.39.0
 ipykernel==6.15.1
 nose2==0.12.0
 pandas==1.4.3
