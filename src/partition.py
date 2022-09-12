@@ -5,6 +5,7 @@ import argparse
 import os
 from core.structure import *
 from core.partitioner import *
+#from azureml.core import Run, Dataset
 
 parser = argparse.ArgumentParser("partition")
 
@@ -31,5 +32,17 @@ model_input_list = partitioner.partition(model_input_reduced, max_package_num)
 i = 0
 for model_input_partition in model_input_list:
     model_input_partition_file = os.path.join(args.model_input_list, f"order_partition_{i}.csv")
+    os.makedirs(args.model_input_list, exist_ok=True)
+    print(f"{args.model_input_list} created.")
+    print(model_input_partition_file)
     model_input_partition.toOrderDF().to_csv(model_input_partition_file, index=False)
     i += 1
+
+## If we adopt to use Dataset in storing generated data:
+
+#ws = Run.get_context().experiment.workspace
+#def_blob_store = ws.get_default_datastore()
+#dataset = Dataset.Tabular.from_delimited_files(path=(def_blob_store, 'partition_result/order_partition_*.csv'))
+#partitioned_dataset = dataset.partition_by(partition_keys=['Source']
+#                                        ,target=(def_blob_store, "partition_by_key_res")
+#                                        , name="partitioned_oj_data")
