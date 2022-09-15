@@ -122,17 +122,44 @@ class ModelInput:
         # Get the upper bound of trucks we need to use for each truck type
         self.all_trucks = self.getAllTrucks(self.all_packages, self.truck_types)
 
-    def getAllPackages(self, order_file):
+
+    def initInputFromDF(self, order_df, distance_df):
+        """Function that initialize model input dataframe directly.
+
+        Args:
+            order_file: the dataframe that stores the order
+            distance_file: the dataframe that stores the pair-wised distance
+            
+        Returns:
+            None
+
+        """
+
+        # Initialize the package to be delivered
+        self.all_packages = self.getAllPackages(order_df)
+        # Initialize the truck types
+        self.truck_types = self.getTruckTypes()
+        # Initialize the distance matrix
+        self.distance_matrix = self.getDistanceMatrix(distance_df)
+        # Get the upper bound of trucks we need to use for each truck type
+        self.all_trucks = self.getAllTrucks(self.all_packages, self.truck_types)
+
+    def getAllPackages(self, order):
         """Function that constructs the list of packages from a file.
 
         Args:
-            order_file: the file that stores the order
+            order: the file/dataframe that stores the order
             
         Returns:
             A list of package objects.
 
         """
-        order_df = pd.read_csv(order_file)
+
+        if isinstance(order, str):
+            order_df = pd.read_csv(order)
+
+        else:
+            order_df = order
 
         all_packages = {}
         for index, row in order_df.iterrows():
@@ -262,21 +289,24 @@ class ModelInput:
         return all_trucks
 
 
-    def getDistanceMatrix(self, distance_file):
+    def getDistanceMatrix(self, distance):
         """Function that constructs the distance matrix from a file.
 
         Args:
-            distance_file: a file that stores the pair-wise distance.
+            distance: a file/dataframe that stores the pair-wise distance.
             
         Returns:
             A DataFrame object that stores the pair-wise distance.
 
         """
-    
-        distance_matrix = None
 
         # distance are in M
-        distance_df = pd.read_csv(distance_file)
+
+        if isinstance(distance, str):
+            distance_df = pd.read_csv(distance)
+
+        else:
+            distance_df = distance
 
         distance_matrix_raw = distance_df.pivot('Source', 'Destination', 'Distance(M)')
         assert(distance_matrix_raw.shape[0] == distance_matrix_raw.shape[1])

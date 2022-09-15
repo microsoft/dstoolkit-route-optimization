@@ -22,6 +22,15 @@ class ModelInputTest(unittest.TestCase):
 
         assert(len(all_packages) > 0)
 
+    def test_GetAllPackagesDF(self):
+
+        order_file = os.path.join(work_dir, "../../sample_data/order_large.csv")
+        order_df = pd.read_csv(order_file)
+        
+        all_packages = ModelInputTest.model_input.getAllPackages(order_df)
+
+        assert(len(all_packages) > 0)
+
 
     def test_getTruckTypes(self):
 
@@ -48,6 +57,37 @@ class ModelInputTest(unittest.TestCase):
 
         assert(distance_matrix.shape[0] > 0)
 
+    def test_getDistanceMatrixDF(self):
+
+        distance_file = os.path.join(work_dir, "../../sample_data/distance.csv")
+        distance_df = pd.read_csv(distance_file)
+
+        distance_matrix = ModelInputTest.model_input.getDistanceMatrix(distance_df)
+
+        assert(distance_matrix.shape[0] > 0)
+
+    def test_initInputFromFile(self):
+        order_file = os.path.join(work_dir, "../../sample_data/order_large.csv")
+        distance_file = os.path.join(work_dir, "../../sample_data/distance.csv")
+
+        ModelInputTest.model_input.initInputFromFile(order_file, distance_file)
+
+        assert(len(ModelInputTest.model_input.all_packages) > 0)
+        assert(ModelInputTest.model_input.distance_matrix.shape[0] > 0)
+
+
+    def test_initInputFromDF(self):
+        order_file = os.path.join(work_dir, "../../sample_data/order_large.csv")
+        distance_file = os.path.join(work_dir, "../../sample_data/distance.csv")
+
+        order_df = pd.read_csv(order_file)
+        distance_df = pd.read_csv(distance_file)
+
+        ModelInputTest.model_input.initInputFromDF(order_df, distance_df)
+
+        assert(len(ModelInputTest.model_input.all_packages) > 0)
+        assert(ModelInputTest.model_input.distance_matrix.shape[0] > 0)
+
     def test_toScheduleDF(self):
 
         order_file = os.path.join(work_dir, "../../sample_data/order_large.csv")
@@ -58,6 +98,8 @@ class ModelInputTest(unittest.TestCase):
 
         assert(schedule_df.shape[0] > 0)
         assert(schedule_df.shape[0] == len(ModelInputTest.model_input.all_packages))
+
+
 
 class ModelResultTest(unittest.TestCase):
 
