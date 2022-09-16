@@ -2,6 +2,45 @@
 
 This repository contains the base repository for developing route optimization, where you can accelerate parallel computation using `ParallelRunStep` class.
 
+# TBA
+
+
+# Getting Started
+
+1. Create environment
+
+    Please follow the instruction with [the notebook for provisioning](./notebook/provisioning.ipynb), where you need to set up Azure environment, environmental variables, python environment, and Azure ML set-up.
+
+2. Understand the contents
+
+    You can understand the whole pipeline with [the notebook for aml pipeline](./notebook/aml_pipeline.ipynb).
+
+# Code structure
+
+```sh
+├── ./notebook
+│   ├── ./notebook/aml_pipeline.ipynb     # Notebook for optimization algorithm
+│   └── ./notebook/provisioning.ipynb     # Notebook for preparing environment
+├── ./requirements.txt                    # Defines required libraries in Python
+├── ./sample_data
+│   ├── ./sample_data/distance.csv        # Sample data defining distances between places
+│   ├── ./sample_data/order_large.csv     # Sample data defining customers' orders
+│   └── ./sample_data/order_small.csv     # Small sample data defining customers' orders
+├── ./src
+│   ├── ./src/core
+│   │   ├── ./src/core/logger.py          # Defines logging features
+│   │   ├── ./src/core/merger.py          # Defines merge process after divided optimization results
+│   │   ├── ./src/core/model.py           # Defines dividing the whole orders into smaller chunks
+│   │   ├── ./src/core/partitioner.py     # TBA
+│   │   ├── ./src/core/reducer.py         # TBA
+│   │   └── ./src/core/structure.py       # Defines basic data structure
+│   ├── ./src/merge.py                    # Wrapping script for merge process
+│   ├── ./src/partition.py                # Wrapping script for partition process
+│   ├── ./src/reduce.py                   # Wrapping script for reduce process
+│   └── ./src/solve.py                    # Wrapping script for solve process
+└── ./tests
+    └── ./tests/core                      # Test codes for each process
+```
 
 
 # Project
