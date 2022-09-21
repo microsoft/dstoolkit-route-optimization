@@ -1,6 +1,12 @@
-# Overview
+![image](https://user-images.githubusercontent.com/64599697/191536989-b798cdc8-6c96-4e8c-88b2-5422c033882c.png)
 
-This repository contains the base repository for developing route optimization, where you can accelerate parallel computation using `ParallelRunStep` class.
+# Large-Scale Route Optimization Accelerator
+
+This accelerator provides the code template to solve large-scale route optimization where the optimal solution cannot be found in reasonable time. A real world scenario is used to demontrate the use of the accelerator.
+
+<!-- # Overview
+
+This repository contains the base repository for developing route optimization, where you can accelerate parallel computation using `ParallelRunStep` class. -->
 
 # TBA
 
