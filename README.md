@@ -2,7 +2,10 @@
 
 # Large-Scale Route Optimization Accelerator
 
-This accelerator provides the code template to solve large-scale route optimization where the optimal solution cannot be found in reasonable time. A real world scenario is used to demontrate the use of the accelerator.
+This accelerator provides the code template to solve large-scale route optimization where the optimal solution cannot be found in reasonable time. A real world scenario is used to demontrate the use of the accelerator. The implementation leverages Azure ML to create a general optimization framework where a large-scale route optimization problem is partitioned into many smaller problems. Each smaller problem can be solved in parallel by any optimization solver. At the end, the result of the smaller problems will be merged as the final result. 
+
+![image](https://user-images.githubusercontent.com/64599697/191935065-15316f45-5905-4c24-a533-658c610f8c48.png)
+
 
 <!-- # Overview
 
