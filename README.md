@@ -22,7 +22,7 @@ To tackle challenge 1 and 3, in this accelarator, we will demonstrate an optimiz
 
 A pure rule-based optimization application is difficult to maintain as the constraints of the problem change. A better way to tackle that is to leverage [optimization solver](https://en.wikipedia.org/wiki/List_of_optimization_software) to model the problem and then let the solver search the solution automactically. There are many optimization techniques, e.g., Linear Programming , Mixed Integer Programming, Constraint Programming, etc. One can choose the best fit for their own problem since the framework introduced in this accelerator is optimization technique agnostic. As an example, we demonstrate how to use Constraint Programming to model the route optimization problem.   
 
-## Route Optimization Example - A real customer scenario
+## Route optimization example - A real world scenario
 
 
 # Solution Design
