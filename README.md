@@ -20,7 +20,18 @@ There are some common challenges for creating a production-grade optimization ap
 
 To tackle challenge 1 and 3, in this accelarator, we will demonstrate an optimization framework using Azure ML that applies partitioning strategy to partition the large-scale route optimization problem into many smaller ones and then solve them individually. This is a practical way to solve any real-world large-scale optimization problem. We will also leverage Azure ML to deploy the optimization application as a REST API such that it can be easy to consume by other applications. 
 
-A pure rule-based optimization application is difficult to maintain as the constraints of the problem change. A better way to tackle that is to leverage [optimization solver](https://en.wikipedia.org/wiki/List_of_optimization_software) to model the problem and then let the solver search the solution automactically. There are many optimization techniques, e.g., Linear Programming , Mixed Integer Programming, Constraint Programming, etc. One can choose the best fit for their own problem since the framework introduced in this accelerator is optimization technique agnostic. As an example, we demonstrate how to use Constraint Programming to model the route optimization problem.   
+A pure rule-based optimization application is difficult to maintain as the constraints of the problem change. A better way to tackle that is to leverage [optimization solver](https://en.wikipedia.org/wiki/List_of_optimization_software) to model the problem and then let the solver search the solution automactically. There are many optimization techniques, e.g., Linear Programming (LP), Mixed Integer Programming (MIP), [Constraint Programming](https://en.wikipedia.org/wiki/Constraint_programming), etc. One can choose the best fit for their own problem since the framework introduced in this accelerator is optimization technique agnostic. As an example, we demonstrate how to use Constraint Programming to model the route optimization problem.   
+
+Comparing to mathematical optimization techniques (e.g., LP, MIP), Constrants Programming are more expressive since it allow us to express a larger collection of problems. For example, a constraint programming model has no limitation on the arithmetic constraints that can be set on decision variables, while a mathematical programming engine is specific to a class of problems whose formulation satisfies certain mathematical properties (for example: quadratic, MIQCP, and convex vs non-convex).
+
+Besides, Constraint programming is also an efficient approach to solve and optimize problems that are too irregular for mathematical optimization. This includes time tabling problems, sequencing problems, and allocation or rostering problems.
+
+The reasons for these irregularities that make the problem difficult to solve for mathematical optimization can be:
+* Constraints that are nonlinear in nature
+* A non convex solution space that contains many locally optimal solutions
+* Multiple disjunctions, which result in poor information returned by a linear relaxation of the problem
+
+To who is interested in the detailed comparison, one can refer to this [link](https://www.ibm.com/docs/en/icos/12.8.0.0?topic=overview-constraint-programming-versus-mathematical-programming). 
 
 ## Route Optimization - A Real World Scenario
 
