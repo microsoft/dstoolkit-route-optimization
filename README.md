@@ -2,7 +2,7 @@
 
 # Large-Scale Route Optimization Accelerator
 
-This accelerator provides the code template to solve large-scale route optimization where the optimal solution cannot be found in reasonable time. A real world scenario is used to demontrate the use of the accelerator. The implementation leverages Azure ML to create a general optimization framework where a large-scale route optimization problem is partitioned into many smaller problems. Each smaller problem can be solved in parallel by any optimization solver. At the end, the result of the smaller problems will be merged as the final result. 
+This accelerator provides the code template to solve large-scale route optimization where the optimal solution cannot be found in reasonable time. A real world scenario is used to demontrate the use of the accelerator. The implementation leverages Azure ML to create a general optimization framework where the large-scale route optimization problem is partitioned into many smaller problems. Each smaller problem can then be solved in parallel by any optimization solver. At the end, the results from all smaller problems will be merged into the final result. 
 
 ![image](https://user-images.githubusercontent.com/64599697/191935065-15316f45-5905-4c24-a533-658c610f8c48.png)
 
@@ -11,10 +11,27 @@ This accelerator provides the code template to solve large-scale route optimizat
 
 This repository contains the base repository for developing route optimization, where you can accelerate parallel computation using `ParallelRunStep` class. -->
 
-# TBA
+## Challenges for Optimization Problem
+
+There are some common challenges for creating a production-grade optimization application:
+1. Most optimization problems are [NP-hard](https://en.wikipedia.org/wiki/NP-hardness) (route optimization falls into this category). When the scale of the problem becomes large, it is impossible to find any good solution in a reasonable time.
+2. The constraints in an optimization problem may change over time as the customer's business evolves. This creates the burden for maintaining the optimization application. 
+3. Deploying the optimization application in a way that can be easy to consume by the other applications is crucial.
+
+To tackle challenge 1 and 3, in this accelarator, we will demonstrate an optimization framework using Azure ML that applies partitioning strategy to partition the large-scale route optimization problem into many smaller ones and then solve them individually. This is a practical way to solve any real-world large-scale optimization problem. We will also leverage Azure ML to deploy the optimization application as a REST API such that it can be easy to consume by other applications. 
+
+A pure rule-based optimization application is difficult to maintain as the constraints of the problem change. A better way to tackle that is to leverage [optimization solver](https://en.wikipedia.org/wiki/List_of_optimization_software) to model the problem and then let the solver search the solution automactically. There are many optimization techniques, e.g., Linear Programming , Mixed Integer Programming, Constraint Programming. One can choose the best fit for their own problem. In thie template, we demonstrate how to use Constraint Programming to model the route optimization problem.   
+
+## Route Optimization Example - A real customer scenario
 
 
-# Getting Started
+# Solution Design
+
+
+## Prerequisite
+
+
+## Getting Started
 
 1. Create environment
 
@@ -24,7 +41,7 @@ This repository contains the base repository for developing route optimization, 
 
     You can understand the whole pipeline with [the notebook for aml pipeline](./notebook/aml_pipeline.ipynb).
 
-# Code structure
+## Code structure
 
 ```sh
 ├── ./notebook
@@ -38,10 +55,10 @@ This repository contains the base repository for developing route optimization, 
 ├── ./src
 │   ├── ./src/core
 │   │   ├── ./src/core/logger.py          # Defines logging features
-│   │   ├── ./src/core/merger.py          # Defines merge process after divided optimization results
-│   │   ├── ./src/core/model.py           # Defines dividing the whole orders into smaller chunks
-│   │   ├── ./src/core/partitioner.py     # TBA
-│   │   ├── ./src/core/reducer.py         # TBA
+│   │   ├── ./src/core/merger.py          # Defines logic for merging the partitioned problem result
+│   │   ├── ./src/core/model.py           # Defines the modelling logic and the core optimizaiton problem
+│   │   ├── ./src/core/partitioner.py     # Defines the partition strategy
+│   │   ├── ./src/core/reducer.py         # Defines any heuristic for search space reduction
 │   │   └── ./src/core/structure.py       # Defines basic data structure
 │   ├── ./src/merge.py                    # Wrapping script for merge process
 │   ├── ./src/partition.py                # Wrapping script for partition process
@@ -51,18 +68,6 @@ This repository contains the base repository for developing route optimization, 
     └── ./tests/core                      # Test codes for each process
 ```
 
-
-# Project
-
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
-
-As the maintainer of this project, please make a few updates:
-
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
 
 ## Contributing
 
