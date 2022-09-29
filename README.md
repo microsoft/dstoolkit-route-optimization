@@ -46,7 +46,7 @@ With the help of Constraint Programming, we can model all these constraints prog
 
 # Solution Design
 
-The key idea of this accelerator is to implement a general framework to solve the large-scale route optimization problem. The end-2-end pipeline is implemented using Azure ML pipeline consisting of 4 key steps. The complete definition of the pipeline can be found in this [notebook](https://github.com/microsoft/dstoolkit-route-optimization/blob/notebook/aml_pipeline.ipynb).
+The key idea of this accelerator is to implement a general framework to solve the large-scale route optimization problem. The end-2-end pipeline is implemented using Azure ML pipeline consisting of 4 key steps. The complete definition of the pipeline can be found in this [notebook](./notebook/aml_pipeline.ipynb).
 
 ![image](docs/media/pipeline.png)
 
@@ -55,7 +55,7 @@ The key idea of this accelerator is to implement a general framework to solve th
 3. **Solve Individual Partition**: This step is achieived by ParallelRunStep in Azure ML. The ParallelRunStep will make sure packages from the same partition will be assigned to the same process. Within each partition, we will input the corresponding packages to our optimization program, which models the problem using our desired optimization solver (it is OR-Tools in our case). The optimiztion program will solve the probelm and output the result to the next step. 
 4. **Merge Result**: Once all the smaller problems are solved, we can merge them with the partial result produced in step 1 as the final result. There is still chance that we can further optimize the result using some simple heuristic in this final step. For example, within each partition, some pacakges may be assigned to a smallest truck since there is no other packages can be delivered together with them. However, when considering the packages that from other partitions, we may have chance to further combine those into a bigger truck if they all share the same destination.   
 
-## Prerequisite
+The whole Azure ML pipeline will be published as a REST API such that it can be called by specifying different input and parameters. 
 
 
 ## Getting Started
@@ -66,7 +66,7 @@ The key idea of this accelerator is to implement a general framework to solve th
 
 2. Understand the contents
 
-    You can understand the whole pipeline with [the notebook for aml pipeline](./notebook/aml_pipeline.ipynb).
+    You can try the whole pipeline by running [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb).
 
 ## Code structure
 
