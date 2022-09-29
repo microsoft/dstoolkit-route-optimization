@@ -35,12 +35,14 @@ To who is interested in the detailed comparison, one can refer to this [link](ht
 
 ## Route Optimization - A Real World Scenario
 
-The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a mannufacturing company. They have many warehouses in different locations. When they receive orders from their clients, they will plan the truck assignment. First of all, the truck will come to a specific warehouse to pick up all packages that assigned to this truck. The decision that the planner need to make is what are the packages will be delivered by this truck. Because the packages may have different destintions, the planner also need to decide the routes of this truck, namely, the order of the stops. Then, the truck will deliver its packages based on it assigned route. The optimization objective here is to minimize the delivery cost incurred by the truck. 
+The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a mannufacturing company. They have many warehouses in different locations. When they receive orders from their clients, they will plan the truck assignment. First of all, the truck will come to a specific warehouse to pick up all packages that assigned to this truck. So, the planner need to decide the package to truck assignment. Because the packages may have different destintions, the planner also need to decide the route of this truck, namely, the order of the stops. Then, the truck will deliver its packages based on its assigned route. The optimization objective here is to minimize the delivery cost incurred by the truck. 
 
 This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). Compare with other VRP, it has its unique contraints like:
 * There are different kind of trucks we can choose from. Each has its own capacity and cost inncurred. 
 * The package is only available by a specific time and need to be delivered to the destination before its deadline.
-* The packages have different properties, some can put in the same trucks but some cannot.
+* The packages have different properties, some can put in the same truck but some cannot.
+
+With the help of Constraint Programming, we can model all this constraints easily. There are a lot of CP sovler we can pick. In this template, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and the its performance [surpass many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model).
 
 # Solution Design
 
