@@ -16,7 +16,7 @@ This repository contains the base repository for developing route optimization, 
 There are some common challenges for creating a production-grade optimization application:
 1. Most optimization problems are [NP-hard](https://en.wikipedia.org/wiki/NP-hardness) (route optimization falls into this category). When the scale of the problem becomes large, it is impossible to find any good solution in a reasonable time.
 2. The constraints in an optimization problem may change over time as the customer's business evolves. This creates the burden for maintaining the optimization application. 
-3. Deploying the optimization application in a way that can be easy to consume by the other applications is also crucial in practice.
+3. Deploying the optimization application in a way that can be easy to consume by other applications is also crucial in practice.
 
 To tackle challenge 1 and 3, in this accelarator, we will demonstrate an optimization framework using Azure ML that applies partitioning strategy to partition the large-scale route optimization problem into many smaller ones and then solve them individually. This is a practical way to solve any real-world large-scale optimization problem. We will also leverage Azure ML to deploy the optimization application as a REST API such that it can be easy to consume by other applications. 
 
@@ -35,6 +35,12 @@ To who is interested in the detailed comparison, one can refer to this [link](ht
 
 ## Route Optimization - A Real World Scenario
 
+The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a mannufacturing company. They have many warehouses in different locations. When they receive orders from their clients, they will plan the truck assignment. First of all, the truck will come to a specific warehouse to pick up all packages that assigned to this truck. The decision that the planner need to make is what are the packages will be delivered by this truck. Because the packages may have different destintions, the planner also need to decide the routes of this truck, namely, the order of the stops. Then, the truck will deliver its packages based on it assigned route. The optimization objective here is to minimize the delivery cost incurred by the truck. 
+
+This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). Compare with other VRP, it has its unique contraints like:
+* There are different kind of trucks we can choose from. Each has its own capacity and cost inncurred. 
+* The package is only available by a specific time and need to be delivered to the destination before its deadline.
+* The packages have different properties, some can put in the same trucks but some cannot.
 
 # Solution Design
 
