@@ -20,7 +20,7 @@ There are some common challenges for creating a production-grade optimization ap
 
 To tackle challenge 1 and 3, in this accelarator, we will demonstrate an optimization framework using Azure ML that applies partitioning strategy to partition the large-scale route optimization problem into many smaller ones and then solve them individually. This is a practical way to solve any real-world large-scale optimization problem. We will also leverage Azure ML to deploy the optimization application as a REST API such that it can be easy to consume by other applications. 
 
-A pure rule-based optimization application is difficult to maintain as the constraints of the problem change. A better way to tackle challenge 2 is to leverage [optimization solver](https://en.wikipedia.org/wiki/List_of_optimization_software) to model the problem and then let the solver search the solution automactically. There are many optimization techniques, e.g., Linear Programming (LP), Mixed Integer Programming (MIP), [Constraint Programming](https://en.wikipedia.org/wiki/Constraint_programming), etc. One can choose the best fit for their own problem since the framework introduced in this accelerator is optimization technique agnostic. In this template, we demonstrate how to use Constraint Programming to model the route optimization problem.   
+A pure rule-based optimization application is difficult to maintain as the constraints of the problem change. A better way to tackle challenge 2 is to leverage [optimization solver](https://en.wikipedia.org/wiki/List_of_optimization_software) to model the problem and then let the solver search the solution automactically. There are many optimization techniques, e.g., Linear Programming (LP), Mixed Integer Programming (MIP), [Constraint Programming](https://en.wikipedia.org/wiki/Constraint_programming), etc. One can choose the best fit for their own problem since the framework introduced in this accelerator is optimization technique agnostic. In this accelerator, we demonstrate how to use Constraint Programming to model the route optimization problem.   
 
 Comparing to mathematical optimization techniques (e.g., LP, MIP), Constrants Programming is more expressive since it allow us to express a larger collection of problems. For example, a constraint programming model has no limitation on the arithmetic constraints that can be set on decision variables, while a mathematical programming engine is specific to a class of problems whose formulation satisfies certain mathematical properties (for example: quadratic, MIQCP, and convex vs non-convex).
 
@@ -42,10 +42,13 @@ This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.or
 * A package is only available by a specific time and need to be delivered to the destination before its deadline.
 * Packages have different properties. Some can put in the same truck but some cannot.
 
-With the help of Constraint Programming, we can model all this constraints easily. There are a lot of CP sovlers we can pick. In this template, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and its performance [surpasses many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer to its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model).
+With the help of Constraint Programming, we can model all this constraints easily. There are a lot of CP sovlers we can pick. In this accelerator, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and its performance [surpasses many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer to its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model).
 
 # Solution Design
 
+The key idea of this accelerator is to implement a general framework to solve the large-scale route optimization problem. The end-2-end pipeline is implemented using Azure ML consisting of 4 key steps:
+
+![image](docs/media/pipeline.png)
 
 ## Prerequisite
 
