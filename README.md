@@ -22,7 +22,7 @@ To tackle challenge 1 and 3, in this accelarator, we will demonstrate an optimiz
 
 A pure rule-based optimization application is difficult to maintain as the constraints of the problem change. A better way to tackle challenge 2 is to leverage [optimization solver](https://en.wikipedia.org/wiki/List_of_optimization_software) to model the problem and then let the solver search the solution automactically. There are many optimization techniques, e.g., Linear Programming (LP), Mixed Integer Programming (MIP), [Constraint Programming](https://en.wikipedia.org/wiki/Constraint_programming), etc. One can choose the best fit for their own problem since the framework introduced in this accelerator is optimization technique agnostic. In this accelerator, we demonstrate how to use Constraint Programming to model the route optimization problem.   
 
-Comparing to mathematical optimization techniques (e.g., LP, MIP), Constrants Programming is more expressive since it allow us to express a larger collection of problems. For example, a constraint programming model has no limitation on the arithmetic constraints that can be set on decision variables, while a mathematical programming engine is specific to a class of problems whose formulation satisfies certain mathematical properties (for example: quadratic, MIQCP, and convex vs non-convex).
+Comparing to mathematical optimization techniques (e.g., LP, MIP), Constrants Programming is more expressive since it allows us to express a larger collection of problems. For example, a constraint programming model has no limitation on the arithmetic constraints that can be set on decision variables, while a mathematical programming engine is specific to a class of problems whose formulation satisfies certain mathematical properties (for example: quadratic, MIQCP, and convex vs non-convex).
 
 Besides, Constraint programming is also an efficient approach to solve and optimize problems that are too irregular for mathematical optimization. This includes time tabling problems, sequencing problems, and allocation or rostering problems.
 
@@ -35,20 +35,25 @@ To who is interested in the detailed comparison, one can refer to this [link](ht
 
 ## Route Optimization - A Real World Scenario
 
-The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a mannufacturing company. They have many warehouses in different locations. When they receive orders from their clients, they need to plan the truck assignment. First of all, a truck need to come to a specific warehouse to pick up all packages that assigned to this truck. The package to truck assignment currently is done by a human planner. Because the packages may have different destintions, the planner also need to decide the route of this truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. The optimization objective here is to minimize the delivery cost incurred by the truck. 
+The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a mannufacturing company. They have many warehouses in different locations. When they receive orders from their clients, they need to plan the truck assignment. First of all, a truck need to come to a specific warehouse to pick up all packages that assigned to this truck. The package to truck assignment currently is done by human planners. Because the packages may have different destintions, the planner also need to decide the route of this truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. The optimization objective here is to minimize the delivery cost incurred by the truck. 
 
 This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). Compare with other VRP, it has its unique contraints like:
 * There are different kind of trucks we can choose from. Each has its own capacity and cost inncurred. 
 * A package is only available by a specific time and need to be delivered to the destination before its deadline.
 * Packages have different properties. Some can put in the same truck but some cannot.
 
-With the help of Constraint Programming, we can model all this constraints easily. There are a lot of CP sovlers we can pick. In this accelerator, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and its performance [surpasses many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer to its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model).
+With the help of Constraint Programming, we can model all these constraints programmatically. There are a lot of CP sovlers we can pick. In this accelerator, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and its performance [surpasses many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer to its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model).
 
 # Solution Design
 
 The key idea of this accelerator is to implement a general framework to solve the large-scale route optimization problem. The end-2-end pipeline is implemented using Azure ML consisting of 4 key steps:
 
 ![image](docs/media/pipeline.png)
+
+1. **Reduce Search Space**: Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: (1) For a large-scale problem, it could end up with a lot of partitions after the second step. It results that we need to launch more machines to parallel the job; (2) For some special cases, we may easily find an optimal/near optimial assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Some trucks is more cost efficent than the others. A simple heuristic is to fill up the most cost efficent truck by packages to the same destination will give us the lowest delivery cost. After applying this heuristic, we will have a partial result that contains the heuristic assignemnt, the remaining pakacges.
+2. **Partition Problem**:
+3. **Solve Individual Partition**:
+4. **Merge Result**:
 
 ## Prerequisite
 
