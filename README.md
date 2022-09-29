@@ -72,7 +72,7 @@ The whole Azure ML pipeline will be published as a REST API such that it can be 
 
 ```sh
 ├── ./notebook
-│   ├── ./notebook/aml_pipeline.ipynb     # Notebook for optimization algorithm
+│   ├── ./notebook/aml_pipeline.ipynb     # Notebook for optimization pipeline
 │   └── ./notebook/provisioning.ipynb     # Notebook for preparing environment
 ├── ./requirements.txt                    # Defines required libraries in Python
 ├── ./sample_data
