@@ -1,11 +1,56 @@
-# Overview
+![image](https://user-images.githubusercontent.com/64599697/191536989-b798cdc8-6c96-4e8c-88b2-5422c033882c.png)
 
-This repository contains the base repository for developing route optimization, where you can accelerate parallel computation using `ParallelRunStep` class.
+# Large-Scale Route Optimization Accelerator
 
-# TBA
+This accelerator provides the code template to solve large-scale route optimization where the optimal solution cannot be found in reasonable time. A real world scenario is used to demontrate the use of the accelerator. The implementation leverages Azure ML to create a general optimization framework where the large-scale route optimization problem is partitioned into many smaller problems. Each smaller problem can then be solved in parallel by any optimization solver. At the end, the results from all smaller problems will be merged into the final result. 
+
+![image](https://user-images.githubusercontent.com/64599697/191935065-15316f45-5905-4c24-a533-658c610f8c48.png)
 
 
-# Getting Started
+<!-- # Overview
+
+This repository contains the base repository for developing route optimization, where you can accelerate parallel computation using `ParallelRunStep` class. -->
+
+## Challenges for Optimization Problem
+
+There are some common challenges for creating a production-grade optimization application:
+1. Most optimization problems are [NP-hard](https://en.wikipedia.org/wiki/NP-hardness) (route optimization falls into this category). When the scale of the problem becomes large, it is impossible to find any good solution in a reasonable time.
+2. The constraints in an optimization problem may change over time as the customer's business evolves. This creates the burden for maintaining the optimization application. 
+3. Deploying the optimization application in a way that can be easy to consume by other applications is also crucial in practice.
+
+To tackle challenge 1 and 3, in this accelarator, we will demonstrate an optimization framework using Azure ML that applies partitioning strategy to partition the large-scale route optimization problem into many smaller ones and then solve them individually. This is a practical way to solve any real-world large-scale optimization problem. We will also leverage Azure ML to deploy the optimization application as a REST API such that it can be easy to consume by other applications. 
+
+A pure rule-based optimization application is difficult to maintain as the constraints of the problem change. A better way to tackle challenge 2 is to leverage [optimization solver](https://en.wikipedia.org/wiki/List_of_optimization_software) to model the problem and then let the solver search the solution automactically. There are many optimization techniques, e.g., Linear Programming (LP), Mixed Integer Programming (MIP), [Constraint Programming](https://en.wikipedia.org/wiki/Constraint_programming), etc. One can choose the best fit for their own problem since the framework introduced in this accelerator is optimization technique agnostic. In this template, we demonstrate how to use Constraint Programming to model the route optimization problem.   
+
+Comparing to mathematical optimization techniques (e.g., LP, MIP), Constrants Programming is more expressive since it allow us to express a larger collection of problems. For example, a constraint programming model has no limitation on the arithmetic constraints that can be set on decision variables, while a mathematical programming engine is specific to a class of problems whose formulation satisfies certain mathematical properties (for example: quadratic, MIQCP, and convex vs non-convex).
+
+Besides, Constraint programming is also an efficient approach to solve and optimize problems that are too irregular for mathematical optimization. This includes time tabling problems, sequencing problems, and allocation or rostering problems.
+
+The reasons for these irregularities that make the problem difficult to solve for mathematical optimization can be:
+* Constraints that are nonlinear in nature
+* A non convex solution space that contains many locally optimal solutions
+* Multiple disjunctions, which result in poor information returned by a linear relaxation of the problem
+
+To who is interested in the detailed comparison, one can refer to this [link](https://www.ibm.com/docs/en/icos/12.8.0.0?topic=overview-constraint-programming-versus-mathematical-programming). 
+
+## Route Optimization - A Real World Scenario
+
+The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a mannufacturing company. They have many warehouses in different locations. When they receive orders from their clients, they need to plan the truck assignment. First of all, a truck need to come to a specific warehouse to pick up all packages that assigned to this truck. The package to truck assignment currently is done by a human planner. Because the packages may have different destintions, the planner also need to decide the route of this truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. The optimization objective here is to minimize the delivery cost incurred by the truck. 
+
+This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). Compare with other VRP, it has its unique contraints like:
+* There are different kind of trucks we can choose from. Each has its own capacity and cost inncurred. 
+* A package is only available by a specific time and need to be delivered to the destination before its deadline.
+* Packages have different properties. Some can put in the same truck but some cannot.
+
+With the help of Constraint Programming, we can model all this constraints easily. There are a lot of CP sovlers we can pick. In this template, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and its performance [surpasses many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer to its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model).
+
+# Solution Design
+
+
+## Prerequisite
+
+
+## Getting Started
 
 1. Create environment
 
@@ -15,7 +60,7 @@ This repository contains the base repository for developing route optimization, 
 
     You can understand the whole pipeline with [the notebook for aml pipeline](./notebook/aml_pipeline.ipynb).
 
-# Code structure
+## Code structure
 
 ```sh
 ├── ./notebook
@@ -29,10 +74,10 @@ This repository contains the base repository for developing route optimization, 
 ├── ./src
 │   ├── ./src/core
 │   │   ├── ./src/core/logger.py          # Defines logging features
-│   │   ├── ./src/core/merger.py          # Defines merge process after divided optimization results
-│   │   ├── ./src/core/model.py           # Defines dividing the whole orders into smaller chunks
-│   │   ├── ./src/core/partitioner.py     # TBA
-│   │   ├── ./src/core/reducer.py         # TBA
+│   │   ├── ./src/core/merger.py          # Defines logic for merging the partitioned problem result
+│   │   ├── ./src/core/model.py           # Defines the modelling logic and the core optimizaiton problem
+│   │   ├── ./src/core/partitioner.py     # Defines the partition strategy
+│   │   ├── ./src/core/reducer.py         # Defines any heuristic for search space reduction
 │   │   └── ./src/core/structure.py       # Defines basic data structure
 │   ├── ./src/merge.py                    # Wrapping script for merge process
 │   ├── ./src/partition.py                # Wrapping script for partition process
@@ -42,18 +87,6 @@ This repository contains the base repository for developing route optimization, 
     └── ./tests/core                      # Test codes for each process
 ```
 
-
-# Project
-
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
-
-As the maintainer of this project, please make a few updates:
-
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
 
 ## Contributing
 
