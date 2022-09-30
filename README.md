@@ -66,7 +66,7 @@ You need to have an Azure subscription with the access to the following resource
 | Azure Machine Leaning | To run the end-2-end pipeline   | Refer to the [instructions](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-workspace?tabs=azure-portal#create-a-workspace) |
 ## Getting Started
 
-1. Create environment
+1. Configure environment
 
     Please follow the instruction with [the notebook for provisioning](./notebook/provisioning.ipynb), where you need to set up Azure environment, environmental variables, python environment, and Azure ML set-up.
 
