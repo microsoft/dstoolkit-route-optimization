@@ -57,14 +57,31 @@ The key idea of this accelerator is to implement a general framework to solve th
 
 The whole Azure ML pipeline will be published as a REST API such that it can be resued by specifying different input and parameters. 
 
+## Prerequisite
 
+You need to have an Azure subscription with the access to the following resources: 
+
+| Azure Resources      | Description | Note |
+| ----------- | ----------- | --------------|
+| Azure Machine Leaning | To run the end-2-end pipeline   | Refer to the [instructions](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-workspace?tabs=azure-portal#create-a-workspace) |
 ## Getting Started
 
 1. Create environment
 
     Please follow the instruction with [the notebook for provisioning](./notebook/provisioning.ipynb), where you need to set up Azure environment, environmental variables, python environment, and Azure ML set-up.
 
-2. Understand the contents
+2. Upload sample data
+
+    We have prepared some sample data in the sample_data directory. You need to upload the data to the default Datastore in your Azure ML workspace. To find your default Datastore, you can login your Azure ML sudio, and click on the Datastores ICON:
+    ![image](docs/media/default-datastore.png)
+    
+    In the detailed page of the default Datastore, you can find the Blob container that associated to Datastore. Follow that link, you can go to the portal of the container, where you can upload the sample data.
+    ![image](docs/media/default-container.png)
+    
+    For example, below we create a folder named model_input and upload all the sample data under this folder. 
+    ![image](docs/media/upload-file.png)
+
+3. Run the optimization pipeline
 
     You can try the whole pipeline by running [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb).
 
