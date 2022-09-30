@@ -73,17 +73,20 @@ You need to have an Azure subscription with the access to the following resource
 2. Upload sample data
 
     We have prepared some sample data in the sample_data directory. You need to upload the data to the default Datastore in your Azure ML workspace. To find your default Datastore, you can login your Azure ML sudio, and click on the Datastores ICON:
+    
     ![image](docs/media/default-datastore.png)
     
-    In the detailed page of the default Datastore, you can find the Blob container that associated to Datastore. Follow that link, you can go to the portal of the container, where you can upload the sample data.
+    In the detailed page of the default Datastore, you can find the Blob container link that associated to this Datastore. Follow the link, you can go to the portal of the container, where you can upload the sample data.
+    
     ![image](docs/media/default-container.png)
     
     For example, below we create a folder named model_input and upload all the sample data under this folder. 
+    
     ![image](docs/media/upload-file.png)
 
 3. Run the optimization pipeline
 
-    You can try the whole pipeline by running [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb).
+    You can create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb).
 
 ## Code structure
 
