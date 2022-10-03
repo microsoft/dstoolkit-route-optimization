@@ -50,7 +50,7 @@ The key idea of this accelerator is to implement a general framework to solve th
 
 ![image](docs/media/pipeline.png)
 
-1. **Reduce Search Space**: Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: (1) For a large-scale problem, it could end up with a lot of partitions after the second step, which results that we need to launch many machines to parallel the job; (2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck is the most cost efficient. A simple heuristic is to fill up the biggest truck by packages having same destination. This heuristic gives us the lowest delivery cost for those packages. After applying this heuristic, we will have (i) a partial result that contains the heuristic assignment, (ii) the remaining unassigned packages as the input for the partition step.
+1. **Reduce Search Space**: Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: (1) For a large-scale problem, it could end up with a lot of partitions after the second step, which results that we need to launch many machines to parallel the job and cost a lot of money; (2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck is the most cost efficient. A simple heuristic is to fill up the biggest truck by packages having same destination. This heuristic gives us the lowest delivery cost for those packages. After applying this heuristic, we will have (i) a partial result that contains the heuristic assignment, (ii) the remaining unassigned packages as the input for the partition step.
 2. **Partition Problem**: Given the reduced problem from step 1, we can apply different partition strategies to cut down the problem space. The objective here is to make sure each single partition is small enough to solve within a user defined time limit. In an ideal case, we hope the partition strategy will not hurt the optimality of the original problem. For example, in our route optimization scenario, partitioning the packages by the delivery source will keep the optimality of the original problem. However, in the case that there are a lot of packages are from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
 3. **Solve Individual Partition**: This step is achieved by ParallelRunStep in Azure ML. The ParallelRunStep will make sure packages from the same partition will be assigned to the same process. Within each partition, we will input the corresponding packages to our optimization program, which models the problem using our desired optimization solver (it is OR-Tools in our case). The optimization program will solve the problem and output the result to the next step. 
 4. **Merge Result**: Once all the smaller problems are solved, we can merge them with the partial result produced in step 1 as the final result. There is still chance that we can further optimize the result using some simple heuristic in this final step. For example, within each partition, some packages may be assigned to a smallest truck since there are no other packages can be delivered together with them. However, when considering packages from other partitions in the merge step, we may have chance to further combine those into a bigger truck if they all share the same destination.   
@@ -72,7 +72,7 @@ You need to have an Azure subscription with the access to the following resource
 
 2. Upload sample data
 
-    We have prepared some sample data in the sample_data directory. You need to upload the data to the default Datastore in your Azure ML workspace. To find your default Datastore, you can login your Azure ML sudio, and click on the Datastores ICON:
+    We have prepared some sample data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small](./sample_data/order_small.csv) under the folder is a small example of the route optimiztion problem, which is best for testing. You can try [order_large](./sample_data/order_large.csv) to test the large-scale runing. To find your default Datastore, you can login your Azure ML sudio, and click on the Datastores ICON:
     
     ![image](docs/media/default-datastore.png)
     
@@ -80,7 +80,7 @@ You need to have an Azure subscription with the access to the following resource
     
     ![image](docs/media/default-container.png)
     
-    For example, below we create a folder named model_input and upload all the sample data under this folder. 
+    For example, below we create a folder named model_input and upload all the sample data into this folder. 
     
     ![image](docs/media/upload-file.png)
 
