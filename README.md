@@ -11,7 +11,7 @@ This accelerator provides the code template to solve large-scale route optimizat
 
 This repository contains the base repository for developing route optimization, where you can accelerate parallel computation using `ParallelRunStep` class. -->
 
-## Challenges for Optimization Problem
+## Challenges for Optimization Application
 
 There are some common challenges for creating a production-grade optimization application:
 1. Most optimization problems are [NP-hard](https://en.wikipedia.org/wiki/NP-hardness) (route optimization falls into this category). When the scale of the problem becomes large, it is impossible to find any good solution in a reasonable time.
