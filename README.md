@@ -7,11 +7,8 @@ This accelerator provides the code template to solve large-scale route optimizat
 ![image](https://user-images.githubusercontent.com/64599697/191935065-15316f45-5905-4c24-a533-658c610f8c48.png)
 
 
-<!-- # Overview
 
-This repository contains the base repository for developing route optimization, where you can accelerate parallel computation using `ParallelRunStep` class. -->
-
-## Challenges for Optimization Application
+<!-- ## Challenges for Optimization Application
 
 There are some common challenges for creating a production-grade optimization application:
 1. Most optimization problems are [NP-hard](https://en.wikipedia.org/wiki/NP-hardness) (route optimization falls into this category). When the scale of the problem becomes large, it is impossible to find any good solution in a reasonable time.
@@ -31,18 +28,35 @@ The reasons for these irregularities that make the problem difficult to solve fo
 * A non convex solution space that contains many locally optimal solutions
 * Multiple disjunctions, which result in poor information returned by a linear relaxation of the problem
 
-To who is interested in the detailed comparison, one can refer to this [link](https://www.ibm.com/docs/en/icos/12.8.0.0?topic=overview-constraint-programming-versus-mathematical-programming). 
+To who is interested in the detailed comparison, one can refer to this [link](https://www.ibm.com/docs/en/icos/12.8.0.0?topic=overview-constraint-programming-versus-mathematical-programming).  -->
 
 ## Route Optimization - A Real World Scenario
 
-The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a manufacturing company. They have many warehouses in different locations. When they receive orders from their clients, they need to plan the truck assignment. First of all, a truck need to come to a specific warehouse to pick up all packages that assigned to this truck. The package to truck assignment currently is done by human planners. Because the packages may have different destinations, the planner also need to decide the route of this truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. The optimization objective here is to minimize the delivery cost incurred by the truck. 
+The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a manufacturing company. They have many warehouses in different locations. When they receive orders from their clients, the human planner need to plan the package to truck assignment. Because the packages may have different destinations, the planner also need to decide the route of this truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. Each truck type has its cost measured by the travelling distance. The optimization objective here is to minimize the delivery cost incurred by the truck. 
 
-This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). Compare with other VRP, it has its unique constraints like:
-* There are different kind of trucks we can choose from. Each has its own capacity and cost incurred. 
-* A package is only available by a specific time and need to be delivered to the destination before its deadline.
-* Packages have different properties. Some can put in the same truck but some cannot.
+This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). The constraints modeled in our example are:
+* There are different kind of trucks we can choose from. A truck has capacity limit on both area and weight. (We assume that there is no limit about the number of trucks for each type)
+* A package is only available by a specific time. A truck can start only when all packages assigned to it are available.
+* The difference between the maximum and minumum avalibale time of all packages in the same truck should be less than a user defined limit (e.g., 4 hours).  
+* All packages need to be delivered to their destination before their deadline.
+* Because of the properties of different products, some packages can put in the same truck but some cannot.
+* A truck can have at most N stops, where N is a user defined number.
+* A truck need to stay at each stop for M hours to unload the packages, where M is a user defined number. Besides, each stop will incur a fixed amount of cost to the total delivery cost. 
 
-With the help of Constraint Programming, we can model all these constraints programmatically. There are a lot of CP solvers we can pick. In this accelerator, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and its performance [surpasses many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer to its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model).
+ | Order_ID | Material_ID | Plate_ID | Source | Destination | Available_Time | Deadline | Danger_Type | Area | Weight |
+ | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------|
+ | A140109 | B-6128 | P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe | City_61 | City_54 | 2022-04-05 23:59:59 | 2022-04-11 23:59:59 | type_1 | 38880 | 30920000 | 
+ | A140112 | B-6128 | P01-84ac394c-9f34-48e7-bd15-76f92120b624 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 38880 | 30920000 | 
+ | A140112 | B-6128 | P01-b70c94db-630a-497b-bb63-b0ad86a7dce6 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 38880 | 30920000 | 
+ | A140112 | B-6128 | P01-4534a7e8-6d73-4a2e-8363-a6645d9bc345 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 38880 | 30920000 | 
+ | A140112 | B-6128 | P01-7208eb61-2cc1-4e7c-b698-e1ab2327b658 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 38880 | 30920000 | 
+ | A190223 | B-6155 | nan-4ac2f30e-bc0a-4415-8612-a6b38d833317 | City_61 | City_53 | 2022-04-06 23:59:59 | 2022-04-12 23:59:59 | type_2 | 9840 | 7640000 | 
+ | A190225 | B-6155 | nan-5ae70ea9-a28e-4107-b267-5a6c84d4a3c7 | City_61 | City_53 | 2022-04-05 23:59:59 | 2022-04-11 23:59:59 | type_2 | 9840 | 7640000 | 
+ | A190226 | B-6155 | nan-c9658637-b5f1-433d-885e-b3008612a73d | City_61 | City_53 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_2 | 9840 | 7640000 | 
+ | A190226 | B-6155 | nan-75768ff3-3dde-4952-9aa0-594c373421d1 | City_61 | City_53 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_2 | 9840 | 7640000 | 
+ | A190226 | B-6155 | nan-39cdd29b-baee-4ed6-bec0-33227cc8608d | City_61 | City_53 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_2 | 9840 | 7640000 | 
+
+<!-- With the help of Constraint Programming, we can model all these constraints programmatically. There are a lot of CP solvers we can pick. In this accelerator, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and its performance [surpasses many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer to its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model). -->
 
 # Solution Design
 
