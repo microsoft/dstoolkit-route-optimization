@@ -188,7 +188,7 @@ Assume we have solved two smaller problems and get their individual result as fo
 | 201 | 300 | AA | 3 | S1 | D1 | 5t |
 | ... | ... | ... | ... | ... | ... | ... |
 
-We can simply concatenate them as a new result:
+We can simply concatenate them as the final result:
 | Schedule_ID | Order_ID | Material_ID | Number_of_Packages | Source | Destination | Truck_Type |
 | --------------|----------- | ----------- | --------------| ----------- | ----------- | ----------- |
 | 103 | 1 | A | 3 | S1 | D1 | 10t |
@@ -205,6 +205,10 @@ We can simply concatenate them as a new result:
 
 The whole Azure ML pipeline will be published as a REST API such that it can be reused by specifying different input and parameters.  -->
 
+# Try the Accelerator
+
+The below sections describe the detailed steps to run the accelerator.
+
 ## Prerequisite
 
 You need to have an Azure subscription with the access to the following resources: 
@@ -212,15 +216,25 @@ You need to have an Azure subscription with the access to the following resource
 | Azure Resources      | Description | Note |
 | ----------- | ----------- | --------------|
 | Azure Machine Leaning | To run the end-2-end pipeline   | Refer to the [instructions](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-workspace?tabs=azure-portal#create-a-workspace) |
+
 ## Getting Started
 
-1. Configure environment
+1. Create a virtual environment. The solution accelerator is tested with Python 3.8. 
+    ```
+    conda create -n route-optimization python=3.8
+    conda activate route-optimization
+    ```
 
-    Please follow the instruction with [the notebook for provisioning](./notebook/provisioning.ipynb), where you need to set up Azure environment, environmental variables, python environment, and Azure ML set-up.
+2. Clone the repo and install python dependencies:
+    ```
+    git clone https://github.com/microsoft/dstoolkit-route-optimization.git
+    cd dstoolkit-route-optimization
+    pip install -r requirements.txt
+    ```
 
-2. Upload sample data
+3. Upload sample data
 
-    We have prepared some sample data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small](./sample_data/order_small.csv) under the folder is a small example of the route optimiztion problem, which is best for testing. You can try [order_large](./sample_data/order_large.csv) to test the large-scale runing. To find your default Datastore, you can login your Azure ML sudio, and click on the Datastores ICON:
+    We have prepared some sample data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small.csv](./sample_data/order_small.csv) under this directory is a small example of the route optimiztion problem, which is best for testing. You can try [order_large.csv](./sample_data/order_large.csv) if you want to test the large-scale run. To find your default Datastore, you can login your Azure ML sudio, and click on the Datastores ICON:
     
     ![image](docs/media/default-datastore.png)
     
@@ -231,10 +245,30 @@ You need to have an Azure subscription with the access to the following resource
     For example, below we create a folder named model_input and upload all the sample data into this folder. 
     
     ![image](docs/media/upload-file.png)
+    
+4. Configure Environment Variables
 
-3. Run the optimization pipeline
+    Create a `.env` file in the root directory of the repository, and fill in the values for the following variables (**Note**: `.env` is meant to be used in local mode. It is already added to the `.gitignore` file to avoid accidental commit of credentials to a repo):
 
-    You can create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb).
+    ```
+    # Cosmos DB Configuration
+    AML_WORKSPACE_NAME=    # The name of the Azure ML workspace
+    AML_SUBSCRIPTION_ID=  # The Azure subscription ID related to the above Azure ML workspace
+    AML_RESOURCE_GROUP=     # The resource group of the Azure ML workspace
+    AML_TENANT_ID=  # The tenant ID of of the Azure subscription
+    
+    AML_COMPUTE_NAME=    # The compute cluster name will be created in Azure ML workspace
+    AML_MIN_NODES=  # The min number of nodes for the compute cluster
+    AML_MAX_NODES=     # The max number of nodes for the compute cluster
+    
+    MODEL_INPUT_ORDER_FILE=    # The path of the order file uploaded in step 3. 
+    MODEL_INPUT_DISTANCE_FILE=  # The path of the distance file uploaded in step 3.
+    MODEL_OUTPUT_PATH=     # The final output of the optimization pipeline
+    ```
+
+5. Run the optimization pipeline
+
+    You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb).
 
 ## Code structure
 
