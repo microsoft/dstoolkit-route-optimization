@@ -43,33 +43,66 @@ This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.or
 * A truck can have at most N stops, where N is a user defined number.
 * A truck need to stay at each stop for M hours to unload the packages, where M is a user defined number. Besides, each stop will incur a fixed amount of cost to the total delivery cost. 
 
- | Order_ID | Material_ID | Plate_ID | Source | Destination | Available_Time | Deadline | Danger_Type | Area | Weight |
+### Example Input
+
+Below shows an example input of the route optimization problem. It is a set of packages to be delivered, where Order_ID, Material_ID and Plate_ID uniquely define a package.
+ | Order_ID | Material_ID | Plate_ID | Source | Destination | Available_Time | Deadline | Danger_Type | Area (m^2) | Weight (kg) |
  | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------|
- | A140109 | B-6128 | P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe | City_61 | City_54 | 2022-04-05 23:59:59 | 2022-04-11 23:59:59 | type_1 | 38880 | 30920000 | 
- | A140112 | B-6128 | P01-84ac394c-9f34-48e7-bd15-76f92120b624 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 38880 | 30920000 | 
- | A140112 | B-6128 | P01-b70c94db-630a-497b-bb63-b0ad86a7dce6 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 38880 | 30920000 | 
- | A140112 | B-6128 | P01-4534a7e8-6d73-4a2e-8363-a6645d9bc345 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 38880 | 30920000 | 
+ | A140109 | B-6128 | P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe | City_61 | City_54 | 2022-04-05 23:59:59 | 2022-04-11 23:59:59 | type_1 | 3.888 | 3092 | 
+ | A140112 | B-6128 | P01-84ac394c-9f34-48e7-bd15-76f92120b624 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 3.888 | 3092 | 
+ | A140112 | B-6128 | P01-b70c94db-630a-497b-bb63-b0ad86a7dce6 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 3.888 | 3092 | 
+<!--  | A140112 | B-6128 | P01-4534a7e8-6d73-4a2e-8363-a6645d9bc345 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 38880 | 30920000 | 
  | A140112 | B-6128 | P01-7208eb61-2cc1-4e7c-b698-e1ab2327b658 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 38880 | 30920000 | 
  | A190223 | B-6155 | nan-4ac2f30e-bc0a-4415-8612-a6b38d833317 | City_61 | City_53 | 2022-04-06 23:59:59 | 2022-04-12 23:59:59 | type_2 | 9840 | 7640000 | 
  | A190225 | B-6155 | nan-5ae70ea9-a28e-4107-b267-5a6c84d4a3c7 | City_61 | City_53 | 2022-04-05 23:59:59 | 2022-04-11 23:59:59 | type_2 | 9840 | 7640000 | 
  | A190226 | B-6155 | nan-c9658637-b5f1-433d-885e-b3008612a73d | City_61 | City_53 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_2 | 9840 | 7640000 | 
  | A190226 | B-6155 | nan-75768ff3-3dde-4952-9aa0-594c373421d1 | City_61 | City_53 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_2 | 9840 | 7640000 | 
- | A190226 | B-6155 | nan-39cdd29b-baee-4ed6-bec0-33227cc8608d | City_61 | City_53 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_2 | 9840 | 7640000 | 
+ | A190226 | B-6155 | nan-39cdd29b-baee-4ed6-bec0-33227cc8608d | City_61 | City_53 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_2 | 9840 | 7640000 |  -->
+
+ 
+ Besides, assume we have 3 kinds of truck can choose from:
+ | Truck Type (length in m) | Inner Size (m^2) | Weight Capacity (kg) | Cost Per KM | Speed (km/h) |
+ | ----------- | ----------- | --------------|----------- |----------- |
+ | 16.5 | 16.1x2.5 | 10000 | 3 | 40 |  
+ | 12.5 | 12.1x2.5 | 5000 | 2 | 40 | 
+ | 9.5 | 9.1x2.3 | 2000 | 1 | 40 | 
+ 
+ ### Example Output
+
+Below is an example output of the route assignment, where Schedule_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are packages from different orders sharing the same truck.
+| Schedule_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Plate_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
+| ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------| ----------- | --------------| --------------|
+| 78c87b4c-173e-4c1b-85d9-a029648341c0  |  City_61->City_54  |  A140112  |  B-6128  |  P01-b70c94db-630a-497b-bb63-b0ad86a7dce6  |  type_1  |  City_61  |  City_54  |  2022-04-07 23:59:59  |  2022-04-10 13:11:46  |  2022-04-13 23:59:59  |  N  |  9.6  | 
+| 7fb70614-64c5-4d40-a8a2-2f6e39205a67  |  City_61->City_54  |  A140112  |  B-6128  |  P01-84ac394c-9f34-48e7-bd15-76f92120b624  |  type_1  |  City_61  |  City_54  |  2022-04-07 23:59:59  |  2022-04-10 13:11:46  |  2022-04-13 23:59:59  |  N  |  9.6  | 
+| d27e70e3-e143-4419-8c4a-2faf130e29b3  |  City_61->City_54  |  A140109  |  B-6128  |  P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe  |  type_1  |  City_61  |  City_54  |  2022-04-05 23:59:59  |  2022-04-08 13:11:46  |  2022-04-11 23:59:59  |  N  |  9.6  | 
 
 <!-- With the help of Constraint Programming, we can model all these constraints programmatically. There are a lot of CP solvers we can pick. In this accelerator, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and its performance [surpasses many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer to its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model). -->
 
 # Solution Design
 
-The key idea of this accelerator is to implement a general framework to solve the large-scale route optimization problem. The end-2-end pipeline is implemented using Azure ML pipeline consisting of 4 key steps. The complete definition of the pipeline can be found in this [notebook](./notebook/aml_pipeline.ipynb).
+The key idea of this accelerator is to implement a general framework (illustrated by the below figure) to solve the large-scale route optimization problem. The end-2-end pipeline is implemented using Azure ML pipeline consisting of 4 key steps. The complete definition of the pipeline can be found in this [notebook](./notebook/aml_pipeline.ipynb).
 
 ![image](docs/media/pipeline.png)
 
-1. **Reduce Search Space**: Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: (1) For a large-scale problem, it could end up with a lot of partitions after the second step, which results that we need to launch many machines to parallel the job and cost a lot of money; (2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck is the most cost efficient. A simple heuristic is to fill up the biggest truck by packages having same destination. This heuristic gives us the lowest delivery cost for those packages. After applying this heuristic, we will have (i) a partial result that contains the heuristic assignment, (ii) the remaining unassigned packages as the input for the partition step.
+We will use a simplified example to elaborate the above steps one by one.
+Assume we have a set of order as below:
+
+| Order_ID | Material_ID | Number_of_Packages | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
+| ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
+| 1 | A | 8 | 2t | S1 | D1 | 2022-08-01 7AM | 2022-08-02 |
+| 2 | B | 15 | 1t | S1 | D2 | 2022-08-01 9AM | 2022-08-03 |
+| 3 | C | 18 | 1t | S1 | D3 | 2022-08-01 10AM | 2022-08-04 |
+| ... | ... | ... | ... | ... | ... | ... | ... |
+| 300 | AA | 33 | 1t | S1 | D1 | 2022-08-01 10AM | 2022-08-04 |
+
+
+
+<!-- 1. **Reduce Search Space**: Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: (1) For a large-scale problem, it could end up with a lot of partitions after the second step, which results that we need to launch many machines to parallel the job and cost a lot of money; (2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck is the most cost efficient. A simple heuristic is to fill up the biggest truck by packages having same destination. This heuristic gives us the lowest delivery cost for those packages. After applying this heuristic, we will have (i) a partial result that contains the heuristic assignment, (ii) the remaining unassigned packages as the input for the partition step.
 2. **Partition Problem**: Given the reduced problem from step 1, we can apply different partition strategies to cut down the problem space. The objective here is to make sure each single partition is small enough to solve within a user defined time limit. In an ideal case, we hope the partition strategy will not hurt the optimality of the original problem. For example, in our route optimization scenario, partitioning the packages by the delivery source will keep the optimality of the original problem. However, in the case that there are a lot of packages are from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
 3. **Solve Individual Partition**: This step is achieved by ParallelRunStep in Azure ML. The ParallelRunStep will make sure packages from the same partition will be assigned to the same process. Within each partition, we will input the corresponding packages to our optimization program, which models the problem using our desired optimization solver (it is OR-Tools in our case). The optimization program will solve the problem and output the result to the next step. 
 4. **Merge Result**: Once all the smaller problems are solved, we can merge them with the partial result produced in step 1 as the final result. There is still chance that we can further optimize the result using some simple heuristic in this final step. For example, within each partition, some packages may be assigned to a smallest truck since there are no other packages can be delivered together with them. However, when considering packages from other partitions in the merge step, we may have chance to further combine those into a bigger truck if they all share the same destination.   
 
-The whole Azure ML pipeline will be published as a REST API such that it can be reused by specifying different input and parameters. 
+The whole Azure ML pipeline will be published as a REST API such that it can be reused by specifying different input and parameters.  -->
 
 ## Prerequisite
 
