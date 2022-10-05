@@ -171,9 +171,32 @@ Comparing to mathematical optimization techniques (e.g., LP, MIP), Constraint Pr
 ## Step 4: Merge the Results
 
 Once all the smaller problems are solved, we can merge them with the partial result produced in step 1 as the final result. 
-Here are two 
+Assume we have solved two smaller problems and get their individual result as follows:
 
-There is still chance that we can further optimize the result using some simple heuristic in this final step. For example, within each partition, some packages may be assigned to a smallest truck since there are no other packages can be delivered together with them. However, when considering packages from other partitions in the merge step, we may have chance to further combine those into a bigger truck if they all share the same destination.
+* Result for partition 1:
+
+| Schedule_ID | Order_ID | Material_ID | Number_of_Packages | Source | Destination | Truck_Type |
+| --------------|----------- | ----------- | --------------| ----------- | ----------- | ----------- |
+| 103 | 1 | A | 3 | S1 | D1 | 10t |
+| 104 | 2 | B | 5 | S1 | D2 | 5t |
+| ... | ... | ... | ... | ... | ... | ... |
+
+* Result for partition 2:
+
+| Schedule_ID | Order_ID | Material_ID | Number_of_Packages | Source | Destination | Truck_Type |
+| --------------|----------- | ----------- | --------------| ----------- | ----------- | ----------- |
+| 201 | 300 | AA | 3 | S1 | D1 | 5t |
+| ... | ... | ... | ... | ... | ... | ... |
+
+We can simply concatenate them as a new result:
+| Schedule_ID | Order_ID | Material_ID | Number_of_Packages | Source | Destination | Truck_Type |
+| --------------|----------- | ----------- | --------------| ----------- | ----------- | ----------- |
+| 103 | 1 | A | 3 | S1 | D1 | 10t |
+| 104 | 2 | B | 5 | S1 | D2 | 5t |
+| ... | ... | ... | ... | ... | ... | ... |
+| 201 | 300 | AA | 3 | S1 | D1 | 5t |
+| ... | ... | ... | ... | ... | ... | ... |
+     
 
 <!-- 1. **Reduce Search Space**: Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: (1) For a large-scale problem, it could end up with a lot of partitions after the second step, which means we need to launch many machines to parallel the job and it will cost a lot of money; (2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck is the most cost efficient. A simple heuristic is to fill up the biggest truck by packages having same destination. This heuristic gives us the lowest delivery cost for those packages. After applying this heuristic, we will have (i) a partial result that contains the heuristic assignment, (ii) the remaining unassigned packages as the input for the partition step.
 2. **Partition Problem**: Given the reduced problem from step 1, we can apply different partition strategies to cut down the problem space. The objective here is to make sure each single partition is small enough to solve within a user defined time limit. In an ideal case, we hope the partition strategy will not hurt the optimality of the original problem. For example, in our route optimization scenario, partitioning the packages by the delivery source will keep the optimality of the original problem. However, in the case that there are a lot of packages are from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
