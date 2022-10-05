@@ -234,7 +234,7 @@ You need to have an Azure subscription with the access to the following resource
 
 3. Upload sample data
 
-    We have prepared some sample data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small.csv](./sample_data/order_small.csv) under this directory is a small example of the route optimiztion problem, which is best for testing. You can try [order_large.csv](./sample_data/order_large.csv) if you want to test the large-scale run. To find your default Datastore, you can login your Azure ML sudio, and click on the Datastores ICON:
+    We have prepared some sample data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small.csv](./sample_data/order_small.csv) under this directory is a small example of the route optimiztion problem, which is best for testing. You can try [order_large.csv](./sample_data/order_large.csv) if you want to test the large-scale run. To find your default Datastore, you can login your Azure ML studio, and click on the Datastores ICON:
     
     ![image](docs/media/default-datastore.png)
     
@@ -251,7 +251,7 @@ You need to have an Azure subscription with the access to the following resource
     Create a `.env` file in the root directory of the repository, and fill in the values for the following variables (**Note**: `.env` is meant to be used in local mode. It is already added to the `.gitignore` file to avoid accidental commit of credentials to a repo):
 
     ```
-    # Cosmos DB Configuration
+    # Azure ML configuration
     AML_WORKSPACE_NAME=    # The name of the Azure ML workspace
     AML_SUBSCRIPTION_ID=  # The Azure subscription ID related to the above Azure ML workspace
     AML_RESOURCE_GROUP=     # The resource group of the Azure ML workspace
@@ -261,6 +261,7 @@ You need to have an Azure subscription with the access to the following resource
     AML_MIN_NODES=  # The min number of nodes for the compute cluster
     AML_MAX_NODES=     # The max number of nodes for the compute cluster
     
+    # Model input/output
     MODEL_INPUT_ORDER_FILE=    # The path of the order file uploaded in step 3. 
     MODEL_INPUT_DISTANCE_FILE=  # The path of the distance file uploaded in step 3.
     MODEL_OUTPUT_PATH=     # The final output of the optimization pipeline
