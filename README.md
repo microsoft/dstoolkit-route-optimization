@@ -280,9 +280,9 @@ You need to have an Azure subscription with the access to the following resource
 │   ├── ./notebook/aml_pipeline.ipynb     # Notebook for optimization pipeline
 ├── ./requirements.txt                    # Defines required libraries in Python
 ├── ./sample_data
-│   ├── ./sample_data/distance.csv        # Sample data defining distances between places
-│   ├── ./sample_data/order_large.csv     # Sample data defining customers' orders
-│   └── ./sample_data/order_small.csv     # Small sample data defining customers' orders
+│   ├── ./sample_data/distance.csv        # Sample data defining distances between locations
+│   ├── ./sample_data/order_large.csv     # Large example of customers' orders
+│   └── ./sample_data/order_small.csv     # Small example of customers' orders
 ├── ./src
 │   ├── ./src/core
 │   │   ├── ./src/core/logger.py          # Defines logging features
