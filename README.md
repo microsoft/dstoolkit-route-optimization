@@ -32,14 +32,14 @@ To who is interested in the detailed comparison, one can refer to this [link](ht
 
 ## Route Optimization - A Real World Scenario
 
-The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a manufacturing company. They have many warehouses in different locations. When they receive orders from their clients, the human planner need to plan the package to truck assignment. Because the packages may have different destinations, the planner also need to decide the route of this truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. Each truck type has its cost measured by the travelling distance. The optimization objective here is to minimize the delivery cost incurred by the truck. 
+The example demonstrated in this solution accelerator is inspired by a real-world scenario. The customer is a manufacturing company. They have many warehouses in different locations. When they receive orders from their clients, the human planner need to plan the package to truck assignment. Because the packages may have different destinations, the planner also need to decide the route of this truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. Each truck type has its cost measured by the travelling distance. The optimization objective here is to minimize the delivery cost incurred by the truck. 
 
 This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). The constraints modeled in our example are:
 1. There are different kind of trucks we can choose from. A truck has capacity limit on both area and weight. (We assume that there is no limit about the number of trucks for each type)
 2. A package is only available by a specific time. A truck can start only when all packages assigned to it are available.
-3. The difference between the maximum and minumum avalibale time of all packages in the same truck should be less than a user defined limit (e.g., 4 hours).  
+3. The difference between the maximum and minimum available time of all packages in the same truck should be less than a user defined limit (e.g., 4 hours).  
 4. All packages need to be delivered to their destination before their deadline.
-5. Because of the properties of different products, some packages can put in the same truck but some cannot.
+5. Because of the properties of different products, some packages can put in the same truck, but some cannot.
 6. A truck can have at most N stops, where N is a user defined number.
 7. A truck need to stay at each stop for M hours to unload the packages, where M is a user defined number. Besides, each stop will incur a fixed amount of cost to the total delivery cost. 
 
