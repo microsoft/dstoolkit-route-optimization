@@ -72,9 +72,11 @@ Below shows an example input of the route optimization problem. It is a set of p
 Below is an example output of the route assignment, where Schedule_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are packages from different orders sharing the same truck.
 | Schedule_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Plate_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------| ----------- | --------------| --------------|
-| 78c87b4c-173e-4c1b-85d9-a029648341c0  |  City_61->City_54  |  A140112  |  B-6128  |  P01-b70c94db-630a-497b-bb63-b0ad86a7dce6  |  type_1  |  City_61  |  City_54  |  2022-04-07 23:59:59  |  2022-04-10 13:11:46  |  2022-04-13 23:59:59  |  N  |  9.6  | 
-| 7fb70614-64c5-4d40-a8a2-2f6e39205a67  |  City_61->City_54  |  A140112  |  B-6128  |  P01-84ac394c-9f34-48e7-bd15-76f92120b624  |  type_1  |  City_61  |  City_54  |  2022-04-07 23:59:59  |  2022-04-10 13:11:46  |  2022-04-13 23:59:59  |  N  |  9.6  | 
 | d27e70e3-e143-4419-8c4a-2faf130e29b3  |  City_61->City_54  |  A140109  |  B-6128  |  P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe  |  type_1  |  City_61  |  City_54  |  2022-04-05 23:59:59  |  2022-04-08 13:11:46  |  2022-04-11 23:59:59  |  N  |  9.6  | 
+| 7fb70614-64c5-4d40-a8a2-2f6e39205a67  |  City_61->City_54  |  A140112  |  B-6128  |  P01-84ac394c-9f34-48e7-bd15-76f92120b624  |  type_1  |  City_61  |  City_54  |  2022-04-07 23:59:59  |  2022-04-10 13:11:46  |  2022-04-13 23:59:59  |  N  |  9.6  | 
+| 78c87b4c-173e-4c1b-85d9-a029648341c0  |  City_61->City_54  |  A140112  |  B-6128  |  P01-b70c94db-630a-497b-bb63-b0ad86a7dce6  |  type_1  |  City_61  |  City_54  |  2022-04-07 23:59:59  |  2022-04-10 13:11:46  |  2022-04-13 23:59:59  |  N  |  9.6  | 
+
+
 
 <!-- With the help of Constraint Programming, we can model all these constraints programmatically. There are a lot of CP solvers we can pick. In this accelerator, we use [Google OR-Tools](https://developers.google.com/optimization). It is open-sourced and its performance [surpasses many other solvers](https://www.minizinc.org/challenge2022/results2022.html). To learn about how to model a problem using CP in OR-Tools, one can refer to its [API documents](https://developers.google.com/optimization/reference/python/sat/python/cp_model). -->
 
@@ -110,7 +112,7 @@ Given the problem space is huge, it could be a good idea to adopt some human heu
 | 101 | 300 | AA | 10 | S1 | D1 | 10t |
 | 102 | 300 | AA | 10 | S1 | D1 | 10t |
 
-* the remaining unassigned packages as the input for the partition step (you may compare it with the original input before the reduce step):
+* the remaining unassigned packages as the input for the partition step (you may compare it with the original input of the reduce step):
 
 | Order_ID | Material_ID | Number_of_Packages | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
@@ -142,7 +144,7 @@ Given the reduced problem from step 1, we can apply different partition strategi
 
 However, in the case that there are a lot of packages are from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
 
-For example, we can further partition packages from source S1 by the Available_Time if there are too many of them. The intuition is that the business constraint #3 of our problem restricts the time span of all the packages in the same truck. So, grouping packages with similar available time will be easier to satisfy this constrant. Below are two sample partitions illustrate this idea.
+For example, we can further partition packages from source S1 by the Available_Time if there are too many of them. The intuition is that the business constraint #3 of our problem restricts the time span of all the packages in the same truck. So, grouping packages with similar available time will be easier to satisfy this constraint. Below are two sample partitions illustrate this idea.
 
 * Orders that are available on 2022-08-01:
 
