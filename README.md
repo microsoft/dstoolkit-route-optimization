@@ -278,7 +278,6 @@ You need to have an Azure subscription with the access to the following resource
 ```sh
 ├── ./notebook
 │   ├── ./notebook/aml_pipeline.ipynb     # Notebook for optimization pipeline
-│   └── ./notebook/provisioning.ipynb     # Notebook for preparing environment
 ├── ./requirements.txt                    # Defines required libraries in Python
 ├── ./sample_data
 │   ├── ./sample_data/distance.csv        # Sample data defining distances between places
