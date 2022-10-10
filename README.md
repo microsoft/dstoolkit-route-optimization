@@ -32,14 +32,14 @@ To who is interested in the detailed comparison, one can refer to this [link](ht
 
 ## Route Optimization - A Real World Scenario
 
-The example demonstrated in this solution accelerator is inspired by a real world scenario. The customer is a manufacturing company. They have many warehouses in different locations. When they receive orders from their clients, the human planner need to plan the package to truck assignment. Because the packages may have different destinations, the planner also need to decide the route of this truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. Each truck type has its cost measured by the travelling distance. The optimization objective here is to minimize the delivery cost incurred by the truck. 
+The example demonstrated in this solution accelerator is inspired by a real-world scenario. The customer is a manufacturing company. They have many warehouses in different locations. When they receive orders from their clients, the human planner need to plan the package to truck assignment. Because the packages may have different destinations, the planner also need to decide the route of each truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. Each truck type has its cost measured by the travelling distance. The optimization objective here is to minimize the delivery cost incurred by the truck. 
 
 This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). The constraints modeled in our example are:
 1. There are different kind of trucks we can choose from. A truck has capacity limit on both area and weight. (We assume that there is no limit about the number of trucks for each type)
 2. A package is only available by a specific time. A truck can start only when all packages assigned to it are available.
-3. The difference between the maximum and minumum avalibale time of all packages in the same truck should be less than a user defined limit (e.g., 4 hours).  
+3. The difference between the maximum and minimum available time of all packages in the same truck should be less than a user defined limit (e.g., 4 hours).  
 4. All packages need to be delivered to their destination before their deadline.
-5. Because of the properties of different products, some packages can put in the same truck but some cannot.
+5. Because of the properties of different products, some packages can put in the same truck, but some cannot.
 6. A truck can have at most N stops, where N is a user defined number.
 7. A truck need to stay at each stop for M hours to unload the packages, where M is a user defined number. Besides, each stop will incur a fixed amount of cost to the total delivery cost. 
 
@@ -99,7 +99,11 @@ Assume we have a set of order as below, where we group same type of pacakges fro
 
 ## Step 1: Reduce the Search Space
 
-Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: (1) For a large-scale problem, it could end up with a lot of partitions after the second step, which means we need to launch many machines to parallel the job and it will cost a lot of money; (2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck (i.e., the 10t one) is the most cost efficient. A simple heuristic is to fill up the biggest truck by packages having same destination. This heuristic gives us the lowest delivery cost for those packages. After applying this heuristic, we will have:
+Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: 
+1) For a large-scale problem, it could end up with a lot of partitions after the partition step, which means we need to launch many machines to parallel the job and it will cost a lot of money; 
+2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck (i.e., the 10t one) is the most cost efficient. A simple heuristic is to fill up the biggest truck by packages having same destination. This heuristic gives us the lowest delivery cost for those packages. 
+
+For example, we can apply the above heuristic to our original input and obtain the following two outcomes:
 * a partial result that contains the heuristic assignment:
 
 | Schedule_ID | Order_ID | Material_ID | Number_of_Packages | Source | Destination | Truck_Type |
@@ -280,9 +284,9 @@ You need to have an Azure subscription with the access to the following resource
 │   ├── ./notebook/aml_pipeline.ipynb     # Notebook for optimization pipeline
 ├── ./requirements.txt                    # Defines required libraries in Python
 ├── ./sample_data
-│   ├── ./sample_data/distance.csv        # Sample data defining distances between places
-│   ├── ./sample_data/order_large.csv     # Sample data defining customers' orders
-│   └── ./sample_data/order_small.csv     # Small sample data defining customers' orders
+│   ├── ./sample_data/distance.csv        # Sample data defining distances between locations
+│   ├── ./sample_data/order_large.csv     # Large example of customers' orders
+│   └── ./sample_data/order_small.csv     # Small example of customers' orders
 ├── ./src
 │   ├── ./src/core
 │   │   ├── ./src/core/logger.py          # Defines logging features
