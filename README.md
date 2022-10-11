@@ -70,7 +70,7 @@ Below shows an example input of the route optimization problem. It is a set of p
  ### Example Output
 
 Below is an example output of the route assignment, where Schedule_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are packages from different orders sharing the same truck.
-| Schedule_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Plate_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
+| Truck_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Plate_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------| ----------- | --------------| --------------|
 | d27e70e3-e143-4419-8c4a-2faf130e29b3  |  City_61->City_54  |  A140109  |  B-6128  |  P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe  |  type_1  |  City_61  |  City_54  |  2022-04-05 23:59:59  |  2022-04-08 13:11:46  |  2022-04-11 23:59:59  |  N  |  9.6  | 
 | 7fb70614-64c5-4d40-a8a2-2f6e39205a67  |  City_61->City_54  |  A140112  |  B-6128  |  P01-84ac394c-9f34-48e7-bd15-76f92120b624  |  type_1  |  City_61  |  City_54  |  2022-04-07 23:59:59  |  2022-04-10 13:11:46  |  2022-04-13 23:59:59  |  N  |  9.6  | 
