@@ -399,6 +399,8 @@ class ModelResult:
         self.truck_assigned_packages = {**self.truck_assigned_packages, **partial_result.truck_assigned_packages}
         self.package_start_time = {**self.package_start_time, **partial_result.package_start_time}
         self.package_arrival_time = {**self.package_arrival_time, **partial_result.package_arrival_time}
+
+        print(f"package start time: {self.package_start_time}")
                
 
     def toScheduleDF(self):

@@ -277,8 +277,8 @@ class SearchSpaceReducer:
                 first_package = False
 
             model_result_partial.truck_assigned_packages[truck.id].append(p_id)
-            model_result_partial.package_start_time = truck_start_time
-            model_result_partial.package_arrival_time = truck_stop_time
+            model_result_partial.package_start_time[p_id] = truck_start_time
+            model_result_partial.package_arrival_time[p_id] = truck_stop_time
         
         return model_result_partial
 
