@@ -237,6 +237,11 @@ You need to have an Azure subscription with the access to the following resource
     cd dstoolkit-route-optimization
     pip install -r requirements.txt
     ```
+    
+    If you are using Visual Code, you will find a kernel named route-optimization in kernel list. To use the this environment in Jupyter Notebook, you need to create a kernel explicitly:
+    ```
+    python -m ipykernel install --user --name route-optimization --display-name "route-optimization"
+    ```
 
 3. Upload sample data
 
