@@ -69,7 +69,7 @@ Below shows an example input of the route optimization problem. It is a set of p
  
  ### Example Output
 
-Below is an example output of the route assignment, where Schedule_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are packages from different orders sharing the same truck.
+Below is an example output of the route assignment, where Truck_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are packages from different orders sharing the same truck.
 | Truck_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Item_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------| ----------- | --------------| --------------|
 | d27e70e3-e143-4419-8c4a-2faf130e29b3  |  City_61->City_54  |  A140109  |  B-6128  |  P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe  |  type_1  |  City_61  |  City_54  |  2022-04-05 23:59:59  |  2022-04-08 13:11:46  |  2022-04-11 23:59:59  |  N  |  9.6  | 
@@ -268,14 +268,14 @@ You need to have an Azure subscription with the access to the following resource
     AML_MAX_NODES=     # The max number of nodes for the compute cluster
     
     # Model input/output
-    MODEL_INPUT_ORDER_FILE=    # The path of the order file uploaded in step 3. 
-    MODEL_INPUT_DISTANCE_FILE=  # The path of the distance file uploaded in step 3.
-    MODEL_OUTPUT_PATH=     # The final output of the optimization pipeline
+    MODEL_INPUT_ORDER_FILE=    # The path of the order file uploaded in step 3. In our example, it will be model_input/order_small.csv
+    MODEL_INPUT_DISTANCE_FILE=  # The path of the distance file uploaded in step 3. In our example, it will be model_input/distance.csv
+    MODEL_OUTPUT_PATH=     # The final output of the optimization pipeline. In our example, it will be model_output
     ```
 
 5. Run the optimization pipeline
 
-    You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb).
+    You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb). Once the pipeline finishes, it will output the final route assignment as a csv file in the MODEL_OUTPUT_PATH you specified above. 
 
 ## Code structure
 
