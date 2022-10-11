@@ -65,7 +65,7 @@ Below shows an example input of the route optimization problem. It is a set of p
  | ----------- | ----------- | --------------|----------- |----------- |
  | 16.5 | 16.1x2.5 | 10000 | 3 | 40 |  
  | 12.5 | 12.1x2.5 | 5000 | 2 | 40 | 
- | 9.5 | 9.1x2.3 | 2000 | 1 | 40 | 
+ | 9.6 | 9.1x2.3 | 2000 | 1 | 40 | 
  
  ### Example Output
 
