@@ -17,7 +17,7 @@ class Package:
         # ID
         self.order_id = None
         self.material_id = None
-        self.plate_id = None 
+        self.item_id = None 
         
         # size  
         self.area = None 
@@ -166,7 +166,7 @@ class ModelInput:
             package = Package()
             package.order_id = row['Order_ID']
             package.material_id = row['Material_ID']
-            package.plate_id = row['Plate_ID']
+            package.item_id = row['Item_ID']
             package.source = row['Source']
             package.destination = row['Destination']
             package.available_time = int(datetime.timestamp(datetime.strptime(row['Available_Time'], '%Y-%m-%d %H:%M:%S')))
@@ -175,7 +175,7 @@ class ModelInput:
             package.area = row['Area']
             package.weight = row['Weight']
 
-            all_packages[package.order_id, package.material_id, package.plate_id] = package
+            all_packages[package.order_id, package.material_id, package.item_id] = package
 
         return all_packages
 
@@ -338,7 +338,7 @@ class ModelInput:
         columns = [
             "Order_ID",
             "Material_ID",
-            "Plate_ID",
+            "Item_ID",
             "Source",
             "Destination",
             "Available_Time",
@@ -351,7 +351,7 @@ class ModelInput:
         for p_id, p in self.all_packages.items():
             order = (p.order_id, 
                      p.material_id, 
-                     p.plate_id, 
+                     p.item_id, 
                      p.source,
                      p.destination,
                      datetime.fromtimestamp(p.available_time),
@@ -419,7 +419,7 @@ class ModelResult:
             "Truck_Route",
             "Order_ID",
             "Material_ID",
-            "Plate_ID",
+            "Item_ID",
             "Danger_Type",
             "Source",
             "Destination",
@@ -454,7 +454,7 @@ class ModelResult:
                             "->".join(self.truck_assigned_route[t_id]), 
                             p.order_id, 
                             p.material_id, 
-                            p.plate_id, 
+                            p.item_id, 
                             p.danger_type,
                             p.source,
                             p.destination,

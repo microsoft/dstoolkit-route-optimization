@@ -32,20 +32,20 @@ To who is interested in the detailed comparison, one can refer to this [link](ht
 
 ## Route Optimization - A Real World Scenario
 
-The example demonstrated in this solution accelerator is inspired by a real-world scenario. The customer is a manufacturing company. They have many warehouses in different locations. When they receive orders from their clients, the human planner need to plan the package to truck assignment. Because the packages may have different destinations, the planner also need to decide the route of each truck, namely, the order of the stops. After that, the truck will deliver its packages based on its assigned route. Each truck type has its cost measured by the travelling distance. The optimization objective here is to minimize the delivery cost incurred by the truck. 
+The example demonstrated in this solution accelerator is inspired by a real-world scenario. The customer is a manufacturing company. They have many warehouses in different locations. When they receive orders from their clients, the human planner need to plan the item to truck assignment. Because the items may have different destinations, the planner also need to decide the route of each truck, namely, the order of the stops. After that, the truck will deliver its items based on its assigned route. Each truck type has its cost measured by the travelling distance. The optimization objective here is to minimize the delivery cost incurred by the truck. 
 
 This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). The constraints modeled in our example are:
 1. There are different kind of trucks we can choose from. A truck has capacity limit on both area and weight. (We assume that there is no limit about the number of trucks for each type)
-2. A package is only available by a specific time. A truck can start only when all packages assigned to it are available.
-3. The difference between the maximum and minimum available time of all packages in the same truck should be less than a user defined limit (e.g., 4 hours).  
-4. All packages need to be delivered to their destination before their deadline.
-5. Because of the properties of different products, some packages can put in the same truck, but some cannot.
+2. A item is only available by a specific time. A truck can start only when all items assigned to it are available.
+3. The difference between the maximum and minimum available time of all items in the same truck should be less than a user defined limit (e.g., 4 hours).  
+4. All items need to be delivered to their destination before their deadline.
+5. Because of the properties of different products, some items can put in the same truck, but some cannot.
 6. A truck can have at most N stops, where N is a user defined number.
-7. A truck need to stay at each stop for M hours to unload the packages, where M is a user defined number. Besides, each stop will incur a fixed amount of cost to the total delivery cost. 
+7. A truck need to stay at each stop for M hours to unload the items, where M is a user defined number. Besides, each stop will incur a fixed amount of cost to the total delivery cost. 
 
 ### Example Input
 
-Below shows an example input of the route optimization problem. It is a set of packages to be delivered, where Order_ID, Material_ID and Plate_ID uniquely define a package.
+Below shows an example input of the route optimization problem. It is a set of items to be delivered, where Order_ID, Material_ID and Plate_ID uniquely define a item.
  | Order_ID | Material_ID | Item_ID | Source | Destination | Available_Time | Deadline | Danger_Type | Area (m^2) | Weight (kg) |
  | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------|
  | A140109 | B-6128 | P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe | City_61 | City_54 | 2022-04-05 23:59:59 | 2022-04-11 23:59:59 | type_1 | 3.888 | 3092 | 
@@ -69,7 +69,7 @@ Below shows an example input of the route optimization problem. It is a set of p
  
  ### Example Output
 
-Below is an example output of the route assignment, where Schedule_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are packages from different orders sharing the same truck.
+Below is an example output of the route assignment, where Schedule_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are items from different orders sharing the same truck.
 | Truck_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Item_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------| ----------- | --------------| --------------|
 | d27e70e3-e143-4419-8c4a-2faf130e29b3  |  City_61->City_54  |  A140109  |  B-6128  |  P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe  |  type_1  |  City_61  |  City_54  |  2022-04-05 23:59:59  |  2022-04-08 13:11:46  |  2022-04-11 23:59:59  |  N  |  9.6  | 
@@ -99,9 +99,9 @@ Assume we have a set of order as below, where we group same type of pacakges fro
 
 ## Step 1: Reduce the Search Space
 
-Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: 
+Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the items first. There two reasons: 
 1) For a large-scale problem, it could end up with a lot of partitions after the partition step, which means we need to launch many machines to parallel the job and it will cost a lot of money; 
-2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck (i.e., the 10t one) is the most cost efficient. A simple heuristic is to fill up the biggest truck by packages having same destination. This heuristic gives us the lowest delivery cost for those packages. 
+2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck (i.e., the 10t one) is the most cost efficient. A simple heuristic is to fill up the biggest truck by items having same destination. This heuristic gives us the lowest delivery cost for those items. 
 
 For example, we can apply the above heuristic to our original input and obtain the following two outcomes:
 * a partial result that contains the heuristic assignment:
@@ -116,7 +116,7 @@ For example, we can apply the above heuristic to our original input and obtain t
 | 101 | 300 | AA | 10 | S1 | D1 | 10t |
 | 102 | 300 | AA | 10 | S1 | D1 | 10t |
 
-* the remaining unassigned packages as the input for the partition step (you may compare it with the original input of the reduce step):
+* the remaining unassigned items as the input for the partition step (you may compare it with the original input of the reduce step):
 
 | Order_ID | Material_ID | Number_of_Items | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
@@ -128,7 +128,7 @@ For example, we can apply the above heuristic to our original input and obtain t
 
 ## Step 2: Partition the Problem
 
-Given the reduced problem from step 1, we can apply different partition strategies to cut down the problem space. The objective here is to make sure each single partition is small enough to solve within a user defined time limit. In an ideal case, we hope the partition strategy will not hurt the optimality of the original problem. For example, in our route optimization scenario, partitioning the packages by the delivery source will keep the optimality of the original problem: 
+Given the reduced problem from step 1, we can apply different partition strategies to cut down the problem space. The objective here is to make sure each single partition is small enough to solve within a user defined time limit. In an ideal case, we hope the partition strategy will not hurt the optimality of the original problem. For example, in our route optimization scenario, partitioning the items by the delivery source will keep the optimality of the original problem: 
 
 * Packages starting from Source S1:
 
@@ -146,9 +146,9 @@ Given the reduced problem from step 1, we can apply different partition strategi
 | 3 | C | 8 | 1t | S1 | D3 | 2022-08-01 10AM | 2022-08-04 |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 
-However, in the case that there are a lot of packages are from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
+However, in the case that there are a lot of items are from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
 
-For example, we can further partition packages from source S1 by the Available_Time if there are too many of them. The intuition is that the business constraint #3 of our problem restricts the time span of all the packages in the same truck. So, grouping packages with similar available time will be easier to satisfy this constraint. Below are two sample partitions illustrate this idea.
+For example, we can further partition items from source S1 by the Available_Time if there are too many of them. The intuition is that the business constraint #3 of our problem restricts the time span of all the items in the same truck. So, grouping items with similar available time will be easier to satisfy this constraint. Below are two sample partitions illustrate this idea.
 
 * Orders that are available on 2022-08-01:
 
@@ -167,7 +167,7 @@ For example, we can further partition packages from source S1 by the Available_T
 
 ## Step 3: Solve the Smaller Problem
 
-This step is achieved by ParallelRunStep in Azure ML. The ParallelRunStep will make sure packages from the same partition will be assigned to the same process. Within each partition, we will input the corresponding packages to our optimization program, which models the problem using our desired optimization solver.
+This step is achieved by ParallelRunStep in Azure ML. The ParallelRunStep will make sure items from the same partition will be assigned to the same process. Within each partition, we will input the corresponding items to our optimization program, which models the problem using our desired optimization solver.
 The optimization program will solve the problem and output the result to the next step. 
 
 There are many optimization techniques, e.g., Linear Programming (LP), Mixed Integer Programming (MIP), [Constraint Programming](https://en.wikipedia.org/wiki/Constraint_programming), etc. One can choose the best fit for their own problem since the framework introduced in this accelerator is optimization technique agnostic. In this accelerator, we demonstrate how to use Constraint Programming to model the route optimization problem.
@@ -204,10 +204,10 @@ We can simply concatenate them as the final result:
 | ... | ... | ... | ... | ... | ... | ... |
      
 
-<!-- 1. **Reduce Search Space**: Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the packages first. There two reasons: (1) For a large-scale problem, it could end up with a lot of partitions after the second step, which means we need to launch many machines to parallel the job and it will cost a lot of money; (2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck is the most cost efficient. A simple heuristic is to fill up the biggest truck by packages having same destination. This heuristic gives us the lowest delivery cost for those packages. After applying this heuristic, we will have (i) a partial result that contains the heuristic assignment, (ii) the remaining unassigned packages as the input for the partition step.
-2. **Partition Problem**: Given the reduced problem from step 1, we can apply different partition strategies to cut down the problem space. The objective here is to make sure each single partition is small enough to solve within a user defined time limit. In an ideal case, we hope the partition strategy will not hurt the optimality of the original problem. For example, in our route optimization scenario, partitioning the packages by the delivery source will keep the optimality of the original problem. However, in the case that there are a lot of packages are from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
-3. **Solve Individual Partition**: This step is achieved by ParallelRunStep in Azure ML. The ParallelRunStep will make sure packages from the same partition will be assigned to the same process. Within each partition, we will input the corresponding packages to our optimization program, which models the problem using our desired optimization solver (it is OR-Tools in our case). The optimization program will solve the problem and output the result to the next step. 
-4. **Merge Result**: Once all the smaller problems are solved, we can merge them with the partial result produced in step 1 as the final result. There is still chance that we can further optimize the result using some simple heuristic in this final step. For example, within each partition, some packages may be assigned to a smallest truck since there are no other packages can be delivered together with them. However, when considering packages from other partitions in the merge step, we may have chance to further combine those into a bigger truck if they all share the same destination.   
+<!-- 1. **Reduce Search Space**: Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the items first. There two reasons: (1) For a large-scale problem, it could end up with a lot of partitions after the second step, which means we need to launch many machines to parallel the job and it will cost a lot of money; (2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck is the most cost efficient. A simple heuristic is to fill up the biggest truck by items having same destination. This heuristic gives us the lowest delivery cost for those items. After applying this heuristic, we will have (i) a partial result that contains the heuristic assignment, (ii) the remaining unassigned items as the input for the partition step.
+2. **Partition Problem**: Given the reduced problem from step 1, we can apply different partition strategies to cut down the problem space. The objective here is to make sure each single partition is small enough to solve within a user defined time limit. In an ideal case, we hope the partition strategy will not hurt the optimality of the original problem. For example, in our route optimization scenario, partitioning the items by the delivery source will keep the optimality of the original problem. However, in the case that there are a lot of items are from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
+3. **Solve Individual Partition**: This step is achieved by ParallelRunStep in Azure ML. The ParallelRunStep will make sure items from the same partition will be assigned to the same process. Within each partition, we will input the corresponding items to our optimization program, which models the problem using our desired optimization solver (it is OR-Tools in our case). The optimization program will solve the problem and output the result to the next step. 
+4. **Merge Result**: Once all the smaller problems are solved, we can merge them with the partial result produced in step 1 as the final result. There is still chance that we can further optimize the result using some simple heuristic in this final step. For example, within each partition, some items may be assigned to a smallest truck since there are no other items can be delivered together with them. However, when considering items from other partitions in the merge step, we may have chance to further combine those into a bigger truck if they all share the same destination.   
 
 The whole Azure ML pipeline will be published as a REST API such that it can be reused by specifying different input and parameters.  -->
 

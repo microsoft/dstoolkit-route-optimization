@@ -172,7 +172,7 @@ class ProblemPartitioner:
         all_packages = {}
 
         for package in candidate_packages:
-            all_packages[package.order_id, package.material_id, package.plate_id] = package
+            all_packages[package.order_id, package.material_id, package.item_id] = package
 
         new_model_input.all_packages = all_packages
         new_model_input.distance_matrix = model_input.distance_matrix
