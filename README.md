@@ -238,7 +238,7 @@ You need to have an Azure subscription with the access to the following resource
     pip install -r requirements.txt
     ```
     
-    If you are using Visual Code, you will find a kernel named route-optimization in kernel list. If you want to use Jupyter Notebook instead, then you need to create a kernel explicitly:
+    If you are using Visual Code, you will find a kernel named route-optimization in the kernel list. If you want to use Jupyter Notebook instead, then you need to create a kernel explicitly:
     ```
     python -m ipykernel install --user --name route-optimization --display-name "route-optimization"
     ```
