@@ -89,7 +89,7 @@ The key idea of this accelerator is to implement a general framework (illustrate
 We will use a simplified example to elaborate the above steps one by one.
 Assume we have a set of order as below, where we group same type of items from the same order as a single record to ease our discussion later on.
 
-| Order_ID | Material_ID | Number_of_items | Weight_Per_item | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_items | Weight_Per_Item | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 1 | A | 8 | 2t | S1 | D1 | 2022-08-01 7AM | 2022-08-02 |
 | 2 | B | 15 | 1t | S1 | D2 | 2022-08-01 9AM | 2022-08-03 |
@@ -118,7 +118,7 @@ For example, we can apply the above heuristic to our original input and obtain t
 
 * the remaining unassigned items as the input for the partition step (you may compare it with the original input of the reduce step):
 
-| Order_ID | Material_ID | Number_of_Items | Weight_Per_item | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_Items | Weight_Per_Item | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 1 | A | 3 | 2t | S1 | D1 | 2022-08-01 7AM | 2022-08-02 |
 | 2 | B | 5 | 1t | S1 | D2 | 2022-08-01 9AM | 2022-08-03 |
@@ -141,7 +141,7 @@ Given the reduced problem from step 1, we can apply different partition strategi
 
 * items starting from Source S2:
 
-| Order_ID | Material_ID | Number_of_Items | Weight_Per_item | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_Items | Weight_Per_Item | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 3 | C | 8 | 1t | S1 | D3 | 2022-08-01 10AM | 2022-08-04 |
 | ... | ... | ... | ... | ... | ... | ... | ... |
@@ -152,7 +152,7 @@ For example, we can further partition items from source S1 by the Available_Time
 
 * Orders that are available on 2022-08-01:
 
-| Order_ID | Material_ID | Number_of_Items | Weight_Per_item | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_Items | Weight_Per_Item | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 1 | A | 3 | 2t | S1 | D1 | 2022-08-01 7AM | 2022-08-02 |
 | 2 | B | 5 | 1t | S1 | D2 | 2022-08-01 9AM | 2022-08-03 |
@@ -160,7 +160,7 @@ For example, we can further partition items from source S1 by the Available_Time
 
 * Orders that are available on 2022-08-02:
 
-| Order_ID | Material_ID | Number_of_Items | Weight_Per_item | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_Items | Weight_Per_Item | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 300 | AA | 3 | 1t | S1 | D1 | 2022-08-02 10AM | 2022-08-04 |
 | ... | ... | ... | ... | ... | ... | ... | ... |
