@@ -46,7 +46,7 @@ This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.or
 ### Example Input
 
 Below shows an example input of the route optimization problem. It is a set of packages to be delivered, where Order_ID, Material_ID and Plate_ID uniquely define a package.
- | Order_ID | Material_ID | Plate_ID | Source | Destination | Available_Time | Deadline | Danger_Type | Area (m^2) | Weight (kg) |
+ | Order_ID | Material_ID | Item_ID | Source | Destination | Available_Time | Deadline | Danger_Type | Area (m^2) | Weight (kg) |
  | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------|
  | A140109 | B-6128 | P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe | City_61 | City_54 | 2022-04-05 23:59:59 | 2022-04-11 23:59:59 | type_1 | 3.888 | 3092 | 
  | A140112 | B-6128 | P01-84ac394c-9f34-48e7-bd15-76f92120b624 | City_61 | City_54 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_1 | 3.888 | 3092 | 
@@ -70,7 +70,7 @@ Below shows an example input of the route optimization problem. It is a set of p
  ### Example Output
 
 Below is an example output of the route assignment, where Schedule_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are packages from different orders sharing the same truck.
-| Truck_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Plate_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
+| Truck_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Item_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------| ----------- | --------------| --------------|
 | d27e70e3-e143-4419-8c4a-2faf130e29b3  |  City_61->City_54  |  A140109  |  B-6128  |  P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe  |  type_1  |  City_61  |  City_54  |  2022-04-05 23:59:59  |  2022-04-08 13:11:46  |  2022-04-11 23:59:59  |  N  |  9.6  | 
 | 7fb70614-64c5-4d40-a8a2-2f6e39205a67  |  City_61->City_54  |  A140112  |  B-6128  |  P01-84ac394c-9f34-48e7-bd15-76f92120b624  |  type_1  |  City_61  |  City_54  |  2022-04-07 23:59:59  |  2022-04-10 13:11:46  |  2022-04-13 23:59:59  |  N  |  9.6  | 
@@ -106,7 +106,7 @@ Given the problem space is huge, it could be a good idea to adopt some human heu
 For example, we can apply the above heuristic to our original input and obtain the following two outcomes:
 * a partial result that contains the heuristic assignment:
 
-| Schedule_ID | Order_ID | Material_ID | Number_of_Packages | Source | Destination | Truck_Type |
+| Schedule_ID | Order_ID | Material_ID | Number_of_Items | Source | Destination | Truck_Type |
 | --------------|----------- | ----------- | --------------| ----------- | ----------- | ----------- |
 | 1 | 1 | A | 5 | S1 | D1 | 10t |
 | 2 | 2 | B | 10 | S1 | D2 | 10t |
@@ -118,7 +118,7 @@ For example, we can apply the above heuristic to our original input and obtain t
 
 * the remaining unassigned packages as the input for the partition step (you may compare it with the original input of the reduce step):
 
-| Order_ID | Material_ID | Number_of_Packages | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_Items | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 1 | A | 3 | 2t | S1 | D1 | 2022-08-01 7AM | 2022-08-02 |
 | 2 | B | 5 | 1t | S1 | D2 | 2022-08-01 9AM | 2022-08-03 |
@@ -132,7 +132,7 @@ Given the reduced problem from step 1, we can apply different partition strategi
 
 * Packages starting from Source S1:
 
-| Order_ID | Material_ID | Number_of_Packages | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_Items | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 1 | A | 3 | 2t | S1 | D1 | 2022-08-01 7AM | 2022-08-02 |
 | 2 | B | 5 | 1t | S1 | D2 | 2022-08-01 9AM | 2022-08-03 |
@@ -141,7 +141,7 @@ Given the reduced problem from step 1, we can apply different partition strategi
 
 * Packages starting from Source S2:
 
-| Order_ID | Material_ID | Number_of_Packages | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_Items | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 3 | C | 8 | 1t | S1 | D3 | 2022-08-01 10AM | 2022-08-04 |
 | ... | ... | ... | ... | ... | ... | ... | ... |
@@ -152,7 +152,7 @@ For example, we can further partition packages from source S1 by the Available_T
 
 * Orders that are available on 2022-08-01:
 
-| Order_ID | Material_ID | Number_of_Packages | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_Items | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 1 | A | 3 | 2t | S1 | D1 | 2022-08-01 7AM | 2022-08-02 |
 | 2 | B | 5 | 1t | S1 | D2 | 2022-08-01 9AM | 2022-08-03 |
@@ -160,7 +160,7 @@ For example, we can further partition packages from source S1 by the Available_T
 
 * Orders that are available on 2022-08-02:
 
-| Order_ID | Material_ID | Number_of_Packages | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
+| Order_ID | Material_ID | Number_of_Items | Weight_Per_Package | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
 | 300 | AA | 3 | 1t | S1 | D1 | 2022-08-02 10AM | 2022-08-04 |
 | ... | ... | ... | ... | ... | ... | ... | ... |
@@ -181,7 +181,7 @@ Assume we have solved two smaller problems and get their individual result as fo
 
 * Result for partition 1:
 
-| Schedule_ID | Order_ID | Material_ID | Number_of_Packages | Source | Destination | Truck_Type |
+| Schedule_ID | Order_ID | Material_ID | Number_of_Items | Source | Destination | Truck_Type |
 | --------------|----------- | ----------- | --------------| ----------- | ----------- | ----------- |
 | 103 | 1 | A | 3 | S1 | D1 | 10t |
 | 104 | 2 | B | 5 | S1 | D2 | 5t |
@@ -189,13 +189,13 @@ Assume we have solved two smaller problems and get their individual result as fo
 
 * Result for partition 2:
 
-| Schedule_ID | Order_ID | Material_ID | Number_of_Packages | Source | Destination | Truck_Type |
+| Schedule_ID | Order_ID | Material_ID | Number_of_Items | Source | Destination | Truck_Type |
 | --------------|----------- | ----------- | --------------| ----------- | ----------- | ----------- |
 | 201 | 300 | AA | 3 | S1 | D1 | 5t |
 | ... | ... | ... | ... | ... | ... | ... |
 
 We can simply concatenate them as the final result:
-| Schedule_ID | Order_ID | Material_ID | Number_of_Packages | Source | Destination | Truck_Type |
+| Schedule_ID | Order_ID | Material_ID | Number_of_Items | Source | Destination | Truck_Type |
 | --------------|----------- | ----------- | --------------| ----------- | ----------- | ----------- |
 | 103 | 1 | A | 3 | S1 | D1 | 10t |
 | 104 | 2 | B | 5 | S1 | D2 | 5t |
