@@ -36,7 +36,7 @@ class SearchSpaceReducer:
         same_order_packages = collections.defaultdict(list)
 
         for key, package in model_input.all_packages.items():
-            order_id, material_id, plate_id = key
+            order_id, material_id, item_id = key
 
             same_order_packages[order_id].append(package)
 
@@ -70,7 +70,7 @@ class SearchSpaceReducer:
 
             for package in packages:
                 
-                p_id = (package.order_id, package.material_id, package.plate_id)
+                p_id = (package.order_id, package.material_id, package.item_id)
 
                 # Can put into the truck
                 if (total_area + package.area <= truck_type.area_capacity and 
@@ -158,7 +158,7 @@ class SearchSpaceReducer:
 
             for package in packages:
                 
-                p_id = (package.order_id, package.material_id, package.plate_id)
+                p_id = (package.order_id, package.material_id, package.item_id)
 
                 # Can put into the truck by capacity constraint
                 if (total_area + package.area <= truck_type.area_capacity and 
@@ -264,7 +264,7 @@ class SearchSpaceReducer:
         model_result_partial.all_trucks[truck.id] = truck
 
         for p in candidate_packages:
-            p_id = (p.order_id, p.material_id, p.plate_id)
+            p_id = (p.order_id, p.material_id, p.item_id)
 
             model_result_partial.all_packages[p_id] = p
 
@@ -277,8 +277,8 @@ class SearchSpaceReducer:
                 first_package = False
 
             model_result_partial.truck_assigned_packages[truck.id].append(p_id)
-            model_result_partial.package_start_time = truck_start_time
-            model_result_partial.package_arrival_time = truck_stop_time
+            model_result_partial.package_start_time[p_id] = truck_start_time
+            model_result_partial.package_arrival_time[p_id] = truck_stop_time
         
         return model_result_partial
 

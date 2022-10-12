@@ -40,7 +40,7 @@ class MergerTest(unittest.TestCase):
         package1 = Package()
         package1.order_id = p_id_1[0]
         package1.material_id = p_id_1[1]
-        package1.plate_id = p_id_1[2]
+        package1.item_id = p_id_1[2]
         package1.danger_type = 'non_danger'
         package1.source = 'A'
         package1.destination = 'B'
@@ -65,7 +65,7 @@ class MergerTest(unittest.TestCase):
         package2 = Package()
         package2.order_id = p_id_2[0]
         package2.material_id = p_id_2[1]
-        package2.plate_id = p_id_2[2]
+        package2.item_id = p_id_2[2]
         package2.danger_type = 'type_1'
         package2.source = 'A'
         package2.destination = 'B'

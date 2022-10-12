@@ -26,9 +26,15 @@ class ReducerTest(unittest.TestCase):
         logger.info("Testing reduce heuristic 1")
         model_input_reduced, model_result_partial = ReducerTest.reducer.reduce1(ReducerTest.model_input)
 
+        model_input_reduced.toOrderDF()
+        model_result_partial.toScheduleDF()
+
 
     def test_reduce2(self):
         logger.info("Testing reduce heuristic 2")
         model_input_reduced, model_result_partial = ReducerTest.reducer.reduce2(ReducerTest.model_input)
+
+        model_input_reduced.toOrderDF()
+        model_result_partial.toScheduleDF()
 
 
