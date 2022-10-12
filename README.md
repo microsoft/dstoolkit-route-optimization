@@ -36,7 +36,7 @@ The example demonstrated in this solution accelerator is inspired by a real-worl
 
 This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). The constraints modeled in our example are:
 1. There are different kind of trucks we can choose from. A truck has capacity limit on both area and weight. (We assume that there is no limit about the number of trucks for each type)
-2. A item is only available by a specific time. A truck can start only when all items assigned to it are available.
+2. An item is only available by a specific time. A truck can start only when all items assigned to it are available.
 3. The difference between the maximum and minimum available time of all items in the same truck should be less than a user defined limit (e.g., 4 hours).  
 4. All items need to be delivered to their destination before their deadline.
 5. Because of the properties of different products, some items can put in the same truck, but some cannot.
@@ -45,7 +45,7 @@ This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.or
 
 ### Example Input
 
-Below shows an example input of the route optimization problem. It is a set of items to be delivered, where Order_ID, Material_ID and Plate_ID uniquely define a item.
+Below shows an example input of the route optimization problem. It is a set of items to be delivered, where the Item_ID uniquely defines an item.
  | Order_ID | Material_ID | Item_ID | Source | Destination | Available_Time | Deadline | Danger_Type | Area (m^2) | Weight (kg) |
  | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------|
  | A140109 | B-6128 | P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe | City_61 | City_54 | 2022-04-05 23:59:59 | 2022-04-11 23:59:59 | type_1 | 3.888 | 3092 | 
@@ -69,7 +69,7 @@ Below shows an example input of the route optimization problem. It is a set of i
  
  ### Example Output
 
-Below is an example output of the route assignment, where Truck_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are packages from different orders sharing the same truck.
+Below is an example output of the route assignment, where Truck_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are items from different orders sharing the same truck.
 | Truck_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Item_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------| ----------- | --------------| --------------|
 | d27e70e3-e143-4419-8c4a-2faf130e29b3  |  City_61->City_54  |  A140109  |  B-6128  |  P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe  |  type_1  |  City_61  |  City_54  |  2022-04-05 23:59:59  |  2022-04-08 13:11:46  |  2022-04-11 23:59:59  |  N  |  9.6  | 
@@ -87,7 +87,7 @@ The key idea of this accelerator is to implement a general framework (illustrate
 ![image](docs/media/pipeline.png)
 
 We will use a simplified example to elaborate the above steps one by one.
-Assume we have a set of order as below, where we group same type of items from the same order as a single record to ease our discussion later on.
+Assume we have a set of order as below, where we group same type (namely, having same Material_ID) of items from the same order as a single record to ease our discussion later on.
 
 | Order_ID | Material_ID | Number_of_items | Weight_Per_Item | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
@@ -146,7 +146,7 @@ Given the reduced problem from step 1, we can apply different partition strategi
 | 3 | C | 8 | 1t | S1 | D3 | 2022-08-01 10AM | 2022-08-04 |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 
-However, in the case that there are a lot of items are from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
+However, in the case that there are a lot of items from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
 
 For example, we can further partition items from source S1 by the Available_Time if there are too many of them. The intuition is that the business constraint #3 of our problem restricts the time span of all the items in the same truck. So, grouping items with similar available time will be easier to satisfy this constraint. Below are two sample partitions illustrate this idea.
 
@@ -245,7 +245,7 @@ You need to have an Azure subscription with the access to the following resource
 
 3. Upload sample data
 
-    We have prepared some sample data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small.csv](./sample_data/order_small.csv) under this directory is a small example of the route optimiztion problem, which is best for testing. You can try [order_large.csv](./sample_data/order_large.csv) if you want to test the large-scale run. To find your default Datastore, you can login your Azure ML studio, and click on the Datastores ICON:
+    We have prepared some sample data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small.csv](./sample_data/order_small.csv) under this directory is a small example of the route optimiztion problem, which is best for testing. You can try [order_large.csv](./sample_data/order_large.csv) if you want to test the large-scale run. Besides, there is another file named [distance.csv](./sample_data/distance.csv) that stores the pair-wise distance between different locations. To find your default Datastore, you can login your Azure ML studio, and click on the Datastores ICON:
     
     ![image](docs/media/default-datastore.png)
     
@@ -270,7 +270,7 @@ You need to have an Azure subscription with the access to the following resource
 
 5. Run the optimization pipeline
 
-    You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb). Once the pipeline finishes, it will output the final route assignment as a csv file in the output path you specified in the notebook (e.g., model_output in out above example). 
+    You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb). Once the pipeline finishes, it will output the final route assignment as a csv file to the Azure ML default Datastore under the output path you specified in the notebook (e.g., model_output in our above example). 
 
 ## Code structure
 
