@@ -266,16 +266,6 @@ You need to have an Azure subscription with the access to the following resource
     AML_WORKSPACE_NAME=    # The name of the Azure ML workspace
     AML_SUBSCRIPTION_ID=  # The Azure subscription ID related to the above Azure ML workspace
     AML_RESOURCE_GROUP=     # The resource group of the Azure ML workspace
-    AML_TENANT_ID=  # The tenant ID of of the Azure subscription
-    
-    AML_COMPUTE_NAME=    # The compute cluster name will be created in Azure ML workspace
-    AML_MIN_NODES=  # The min number of nodes for the compute cluster
-    AML_MAX_NODES=     # The max number of nodes for the compute cluster
-    
-    # Model input/output
-    MODEL_INPUT_ORDER_FILE=    # The path of the order file uploaded in step 3. In our example, it will be model_input/order_small.csv
-    MODEL_INPUT_DISTANCE_FILE=  # The path of the distance file uploaded in step 3. In our example, it will be model_input/distance.csv
-    MODEL_OUTPUT_PATH=     # The final output of the optimization pipeline. In our example, it will be model_output
     ```
 
 5. Run the optimization pipeline
