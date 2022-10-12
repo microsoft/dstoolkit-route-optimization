@@ -270,7 +270,7 @@ You need to have an Azure subscription with the access to the following resource
 
 5. Run the optimization pipeline
 
-    You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb). Once the pipeline finishes, it will output the final route assignment as a csv file in the MODEL_OUTPUT_PATH you specified above. 
+    You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb). Once the pipeline finishes, it will output the final route assignment as a csv file in the output path you specified in the notebook (e.g., model_output in out above example). 
 
 ## Code structure
 
