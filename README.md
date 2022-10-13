@@ -99,7 +99,7 @@ Assume we have a set of order as below, where we group same type (namely, having
 
 ## Step 1: Reduce the Search Space
 
-Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the items first. There two reasons: 
+Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the items first. There are two reasons: 
 1) For a large-scale problem, it could end up with a lot of partitions after the partition step, which means we need to launch many machines to parallel the job and it will cost a lot of money; 
 2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck (i.e., the 10t one) is the most cost efficient. A simple heuristic is to fill up the biggest truck by items having same destination. This heuristic gives us the lowest delivery cost for those items. 
 
