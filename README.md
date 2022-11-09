@@ -2,7 +2,7 @@
 
 # Large-Scale Route Optimization Accelerator
 
-This accelerator provides the code template to solve large-scale route optimization where the optimal solution cannot be found in reasonable time. A real world scenario is used to demonstrate the use of the accelerator. The implementation leverages Azure ML to create a general optimization framework where the large-scale route optimization problem is partitioned into many smaller problems. Each smaller problem can then be solved in parallel by any optimization solver. At the end, the results from all smaller problems will be merged into the final result. 
+This accelerator provides the code template for solving large-scale route optimization problems. The accelerator implements a scalable optimization approach that partitions a large optimization problem into smaller problems, and solves those reduced optimization problems in parallel by leveraging Azure Machine Learning. The solutions to the smaller problems are then consolidated to form a feasible solution to the original optimization problem. A real-world route optimization scenario is used as an example to demonstrate the use of the accelerator.
 
 ![image](https://user-images.githubusercontent.com/64599697/191935065-15316f45-5905-4c24-a533-658c610f8c48.png)
 
@@ -32,16 +32,16 @@ To who is interested in the detailed comparison, one can refer to this [link](ht
 
 ## Route Optimization - A Real World Scenario
 
-The example demonstrated in this solution accelerator is inspired by a real-world scenario. The customer is a manufacturing company. They have many warehouses in different locations. When they receive orders from their clients, the human planner need to plan the item to truck assignment. Because the items may have different destinations, the planner also need to decide the route of each truck, namely, the order of the stops. After that, the truck will deliver its items based on its assigned route. Each truck type has its cost measured by the travelling distance. The optimization objective here is to minimize the delivery cost incurred by the truck. 
+The example demonstrated in this solution accelerator is inspired by a real-world optimization scenario. The customer is a manufacturing company. They have warehouses in different locations. When they receive orders from their clients, a planner need to plan the item-to-truck assignment for order delivery. The planner also need to decide the route of each delivery truck, namely, the sequence of the stops to deliver orders to different destinations. A delivery assignment has its associated cost determined by the type of the assigned delivery truck and the corresponding travelling distance. The optimization objective here is to minimize the overall delivery cost. 
 
 This is a variant of the [vehicle routing problem (VRP)](https://en.wikipedia.org/wiki/Vehicle_routing_problem). The constraints modeled in our example are:
-1. There are different kind of trucks we can choose from. A truck has capacity limit on both area and weight. (We assume that there is no limit about the number of trucks for each type)
+1. There are different types of trucks we can choose from. A truck has capacity limit on both area and weight. (We assume that there is no limit on the number of trucks for each type)
 2. An item is only available by a specific time. A truck can start only when all items assigned to it are available.
-3. The difference between the maximum and minimum available time of all items in the same truck should be less than a user defined limit (e.g., 4 hours).  
-4. All items need to be delivered to their destination before their deadline.
-5. Because of the properties of different products, some items can put in the same truck, but some cannot.
+3. The available time difference between the earliest and last available items in the same truck should be less than a user defined limit (e.g., 4 hours).  
+4. All items need to be delivered to their destinations before their deadlines.
+5. Depending on the properties of products, some items can put in the same truck, but some cannot.
 6. A truck can have at most N stops, where N is a user defined number.
-7. A truck need to stay at each stop for M hours to unload the items, where M is a user defined number. Besides, each stop will incur a fixed amount of cost to the total delivery cost. 
+7. A truck need to stay at each stop for M hours to unload the items, where M is a user defined number. Each stop will incur a fixed amount of cost in addition to the delivery cost. 
 
 ### Example Input
 
@@ -60,7 +60,7 @@ Below shows an example input of the route optimization problem. It is a set of i
  | A190226 | B-6155 | nan-39cdd29b-baee-4ed6-bec0-33227cc8608d | City_61 | City_53 | 2022-04-07 23:59:59 | 2022-04-13 23:59:59 | type_2 | 9840 | 7640000 |  -->
 
  
- Besides, assume we have 3 kinds of truck can choose from:
+Also assume there are 3 types of trucks available for assignment:
  | Truck Type (length in m) | Inner Size (m^2) | Weight Capacity (kg) | Cost Per KM | Speed (km/h) |
  | ----------- | ----------- | --------------|----------- |----------- |
  | 16.5 | 16.1x2.5 | 10000 | 3 | 40 |  
@@ -69,7 +69,7 @@ Below shows an example input of the route optimization problem. It is a set of i
  
  ### Example Output
 
-Below is an example output of the route assignment, where Truck_ID uniquely defines a truck. Besides, the column Shared_Truck indicates if there are items from different orders sharing the same truck.
+Below is an example output of the route assignment, where Truck_ID uniquely defines a truck. The column Shared_Truck indicates if there are items from different orders sharing the same truck.
 | Truck_ID  |  Truck_Route  |  Order_ID  |  Material_ID  |  Item_ID  |  Danger_Type  |  Source  |  Destination  |  Start_Time  |  Arrival_Time  |  Deadline  |  Shared_Truck  |  Truck_Type  | 
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- | --------------| --------------| ----------- | --------------| --------------|
 | d27e70e3-e143-4419-8c4a-2faf130e29b3  |  City_61->City_54  |  A140109  |  B-6128  |  P01-79c46a02-e12f-41c4-9ec9-25e48597ebfe  |  type_1  |  City_61  |  City_54  |  2022-04-05 23:59:59  |  2022-04-08 13:11:46  |  2022-04-11 23:59:59  |  N  |  9.6  | 
@@ -82,12 +82,12 @@ Below is an example output of the route assignment, where Truck_ID uniquely defi
 
 # Solution Design
 
-The key idea of this accelerator is to implement a general framework (illustrated by the below figure) to solve the large-scale route optimization problem. The end-2-end pipeline is implemented using Azure ML pipeline consisting of 4 key steps. The complete definition of the pipeline can be found in this [notebook](./notebook/aml_pipeline.ipynb).
+The key idea of this accelerator is to implement a general framework (illustrated by the below figure) for solving large-scale route optimization problems. The end-to-end pipeline is implemented using Azure ML pipeline consisting of 4 key steps. The complete definition of the pipeline can be found in this [notebook](./notebook/aml_pipeline.ipynb).
 
 ![image](docs/media/pipeline.png)
 
-We will use a simplified example to elaborate the above steps one by one.
-Assume we have a set of order as below, where we group same type (namely, having same Material_ID) of items from the same order as a single record to ease our discussion later on.
+We use the following simplified example to illustrate the above steps.
+Assume we have a set of orders as below, where we group same type (namely, having same Material_ID) of items from the same order as a single record for ease of discussion.
 
 | Order_ID | Material_ID | Number_of_items | Weight_Per_Item | Source | Destination | Available_Time | Deadline |
 | ----------- | ----------- | --------------|----------- | ----------- | --------------| ----------- | ----------- |
@@ -99,9 +99,7 @@ Assume we have a set of order as below, where we group same type (namely, having
 
 ## Step 1: Reduce the Search Space
 
-Given the problem space is huge, it could be a good idea to adopt some human heuristics to assign part of the items first. There are two reasons: 
-1) For a large-scale problem, it could end up with a lot of partitions after the partition step, which means we need to launch many machines to parallel the job and it will cost a lot of money; 
-2) For some special cases, we may easily find an optimal/near-optimal assignment based on some simple heuristics. For example, in our route optimization scenario, there are different kind of trucks we can choose from. Among them, the biggest truck (i.e., the 10t one) is the most cost efficient. A simple heuristic is to fill up the biggest truck by items having same destination. This heuristic gives us the lowest delivery cost for those items. 
+For large-scale route optimization problems, it is often possible to apply human heuristics to pre-assign a subset of the items, effectively reducing the problem size. In some cases, we can easily find an optimal/near-optimal assignment based on simple heuristics. For example, in the above route optimization scenario, there are different types of trucks we can choose from. Among them, the biggest truck (i.e., the 10t one) is most cost effective. A simple heuristic is to fill up the biggest truck with items of the same destination. This assignment incurs the lowest delivery cost for those items. 
 
 For example, we can apply the above heuristic to our original input and obtain the following two outcomes:
 * a partial result that contains the heuristic assignment:
@@ -128,7 +126,7 @@ For example, we can apply the above heuristic to our original input and obtain t
 
 ## Step 2: Partition the Problem
 
-Given the reduced problem from step 1, we can apply different partition strategies to cut down the problem space. The objective here is to make sure each single partition is small enough to solve within a user defined time limit. In an ideal case, we hope the partition strategy will not hurt the optimality of the original problem. For example, in our route optimization scenario, partitioning the items by the delivery source will keep the optimality of the original problem: 
+Given the reduced problem from step 1, we can apply different partition strategies to further reduce the problem space. The objective is to ensure each single partition is small enough to solve within a user defined time limit. In an ideal case, the chosen partitioning strategy should not change the optimum of the original problem. Using the above route optimization problem as an example, partitioning the items by the delivery source as below will not change the optimum of the original problem: 
 
 * items starting from Source S1:
 
@@ -146,9 +144,9 @@ Given the reduced problem from step 1, we can apply different partition strategi
 | 3 | C | 8 | 1t | S1 | D3 | 2022-08-01 10AM | 2022-08-04 |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 
-However, in the case that there are a lot of items from the same source, we need to further partition those such that we can solve the problem within the time limit. The optimality may lose after that. There will be a trade-off between optimality and running time. Usually, shortening running time is more preferred.  
+In the case where there are a lot of items from the same source, you may need to further partition those items such that individual problems can be solved within a given time limit. The optimality may not be guaranteed in this case. 
 
-For example, we can further partition items from source S1 by the Available_Time if there are too many of them. The intuition is that the business constraint #3 of our problem restricts the time span of all the items in the same truck. So, grouping items with similar available time will be easier to satisfy this constraint. Below are two sample partitions illustrate this idea.
+For example, we can further partition items from source S1 by Available_Time. The intuition is that the business constraint #3 of our problem restricts the time span of all the items in the same truck. So, grouping items with similar available time will be easier to satisfy this constraint. Below are two example partitions to illustrate the idea.
 
 * Orders that are available on 2022-08-01:
 
@@ -167,17 +165,14 @@ For example, we can further partition items from source S1 by the Available_Time
 
 ## Step 3: Solve the Smaller Problem
 
-This step is achieved by ParallelRunStep in Azure ML. The ParallelRunStep will make sure items from the same partition will be assigned to the same process. Within each partition, we will input the corresponding items to our optimization program, which models the problem using our desired optimization solver.
-The optimization program will solve the problem and output the result to the next step. 
+This step is achieved by the ParallelRunStep function provided by Azure Machine Learning. The ParallelRunStep function can be configured to solve partitioned optimization problems in parallel with a chosen optimization solver.
 
-There are many optimization techniques, e.g., Linear Programming (LP), Mixed Integer Programming (MIP), [Constraint Programming](https://en.wikipedia.org/wiki/Constraint_programming), etc. One can choose the best fit for their own problem since the framework introduced in this accelerator is optimization technique agnostic. In this accelerator, we demonstrate how to use Constraint Programming to model the route optimization problem.
+There are many optimization techniques, e.g., Linear Programming (LP), Mixed Integer Programming (MIP), [Constraint Programming](https://en.wikipedia.org/wiki/Constraint_programming), etc. that one can use to solve the optimization problems. The framework introduced in this accelerator is solver-agnostic. In this accelerator, we demonstrate the use of Constraint Programming for route optimization.
 
-Comparing to mathematical optimization techniques (e.g., LP, MIP), Constraint Programming is more expressive since it allows us to express a larger collection of problems. To who is interested in the detailed comparison, one can refer to this [link](https://www.ibm.com/docs/en/icos/12.8.0.0?topic=overview-constraint-programming-versus-mathematical-programming).
-
+Comparing to mathematical optimization techniques (e.g., LP, MIP), Constraint Programming is more expressive in that it can be used to model optimization problems in forms of arbitrary constraints; for more details see [this article](https://www.ibm.com/docs/en/icos/12.8.0.0?topic=overview-constraint-programming-versus-mathematical-programming).
 ## Step 4: Merge the Results
 
-Once all the smaller problems are solved, we can merge them with the partial result produced in step 1 as the final result. 
-Assume we have solved two smaller problems and get their individual result as follows:
+Once all the smaller problems are solved, we can merge their corresponding solutions with the partial result produced in step 1 to form a feasible solution to the original optimization problem. Assume we have solved two smaller problems with their individual results as follows:
 
 * Result for partition 1:
 
@@ -194,7 +189,7 @@ Assume we have solved two smaller problems and get their individual result as fo
 | 201 | 300 | AA | 3 | S1 | D1 | 5t |
 | ... | ... | ... | ... | ... | ... | ... |
 
-We can simply concatenate them as the final result:
+We can simply concatenate the above results to form the final solution:
 | Schedule_ID | Order_ID | Material_ID | Number_of_Items | Source | Destination | Truck_Type |
 | --------------|----------- | ----------- | --------------| ----------- | ----------- | ----------- |
 | 103 | 1 | A | 3 | S1 | D1 | 10t |
@@ -221,7 +216,7 @@ You need to have an Azure subscription with the access to the following resource
 
 | Azure Resources      | Description | Note |
 | ----------- | ----------- | --------------|
-| Azure Machine Leaning | To run the end-2-end pipeline   | Refer to the [instructions](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-workspace?tabs=azure-portal#create-a-workspace) |
+| Azure Machine Leaning | To run the end-2-end pipeline   | Refer to the [instructions](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-manage-workspace?tabs=azure-portal#create-a-workspace) to provision an Azure ML service |
 
 ## Getting Started
 
@@ -238,18 +233,20 @@ You need to have an Azure subscription with the access to the following resource
     pip install -r requirements.txt
     ```
     
-    If you are using Visual Code, you will find a kernel named route-optimization in the kernel list. If you want to use Jupyter Notebook instead, then you need to create a kernel explicitly:
+    If you are using Visual Studio Code, you will find a kernel named route-optimization in the kernel list. If you want to use Jupyter Notebook instead, create a kernel explicitly:
     ```
     python -m ipykernel install --user --name route-optimization --display-name "route-optimization"
     ```
 
 3. Upload sample data
 
-    We have prepared some sample data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small.csv](./sample_data/order_small.csv) under this directory is a small example of the route optimiztion problem, which is best for testing. You can try [order_large.csv](./sample_data/order_large.csv) if you want to test the large-scale run. Besides, there is another file named [distance.csv](./sample_data/distance.csv) that stores the pair-wise distance between different locations. To find your default Datastore, you can login your Azure ML studio, and click on the Datastores ICON:
+    We have prepared some sample input data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small.csv](./sample_data/order_small.csv) under this directory is a small sample, best for testing. You can alternatively use [order_large.csv](./sample_data/order_large.csv) to test parallel run. In addition, there is another file named [distance.csv](./sample_data/distance.csv) that stores the pair-wise distance between different locations. 
+    
+    To find your default Datastore, you can login your Azure ML studio, and click on the Datastores icon:
     
     ![image](docs/media/default-datastore.png)
     
-    In the detailed page of the default Datastore, you can find the Blob container link that associated to this Datastore. Follow the link, you can go to the portal of the container, where you can upload the sample data.
+    In the Overview page of the default Datastore, you can find the Blob container linking to this Datastore. Follow the link, you can go to the portal of the container, where you can upload the sample data.
     
     ![image](docs/media/default-container.png)
     
@@ -270,7 +267,7 @@ You need to have an Azure subscription with the access to the following resource
 
 5. Run the optimization pipeline
 
-    You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb). Once the pipeline finishes, it will output the final route assignment as a csv file to the Azure ML default Datastore under the output path you specified in the notebook (e.g., model_output in our above example). 
+    You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb). Once the pipeline run is completed, it will output the final route assignment as a csv file to the Azure ML default Datastore under the output path you specified in the notebook (e.g., model_output in our above example). 
 
 ## Code structure
 
