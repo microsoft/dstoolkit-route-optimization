@@ -237,24 +237,8 @@ You need to have an Azure subscription with the access to the following resource
     ```
     python -m ipykernel install --user --name route-optimization --display-name "route-optimization"
     ```
-
-3. Upload sample data
-
-    We have prepared some sample input data in the [sample_data](./sample_data) directory. You need to upload all the data to the default Datastore in your Azure ML workspace. The [order_small.csv](./sample_data/order_small.csv) under this directory is a small sample, best for testing. You can alternatively use [order_large.csv](./sample_data/order_large.csv) to test parallel run. In addition, there is another file named [distance.csv](./sample_data/distance.csv) that stores the pair-wise distance between different locations. 
     
-    To find your default Datastore, you can login your Azure ML studio, and click on the Datastores icon:
-    
-    ![image](docs/media/default-datastore.png)
-    
-    In the Overview page of the default Datastore, you can find the Blob container linking to this Datastore. Follow the link, you can go to the portal of the container, where you can upload the sample data.
-    
-    ![image](docs/media/default-container.png)
-    
-    For example, below we create a folder named model_input and upload all the sample data into this folder. 
-    
-    ![image](docs/media/upload-file.png)
-    
-4. Configure Environment Variables
+3. Configure Environment Variables
 
     Create a `.env` file in the root directory of the repository, and fill in the values for the following variables (**Note**: `.env` is meant to be used in local mode. It is already added to the `.gitignore` file to avoid accidental commit of credentials to a repo):
 
@@ -265,7 +249,7 @@ You need to have an Azure subscription with the access to the following resource
     AML_RESOURCE_GROUP=     # The resource group of the Azure ML workspace
     ```
 
-5. Run the optimization pipeline
+4. Run the optimization pipeline
 
     You can now create and run the whole pipeline using [the notebook for pipeline definition](./notebook/aml_pipeline.ipynb). Once the pipeline run is completed, it will output the final route assignment as a csv file to the Azure ML default Datastore under the output path you specified in the notebook (e.g., model_output in our above example). 
 
@@ -291,6 +275,7 @@ You need to have an Azure subscription with the access to the following resource
 │   ├── ./src/partition.py                # Wrapping script for partition process
 │   ├── ./src/reduce.py                   # Wrapping script for reduce process
 │   └── ./src/solve.py                    # Wrapping script for solve process
+│   └── ./src/env.yml                     # conda environment for the pipeline jobs
 └── ./tests
     └── ./tests/core                      # Test codes for each process
 ```

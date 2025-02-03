@@ -93,12 +93,12 @@ class Model:
             def solution_count(self):
                 return self.__solution_count
 
-        # self.solver.parameters.num_search_workers = max(1, multiprocessing.cpu_count()-1)
-        self.solver.parameters.num_search_workers = 1
+        self.solver.parameters.num_search_workers = max(1, multiprocessing.cpu_count()-1)
+        # self.solver.parameters.num_search_workers = 1
         self.solver.parameters.max_time_in_seconds = max_time_in_seconds # Solver will stop after this number of seconds
 
         printer = SolutionPrinter()
-        status = self.solver.SolveWithSolutionCallback(self.model, printer)
+        status = self.solver.Solve(self.model, printer)
 
         # Limit the number of search
         # status = self.solver.SearchForAllSolutions(self.model, logger.infoer)
@@ -114,6 +114,7 @@ class Model:
             self.validateInput()
             
             logger.info(f"Number of conflicts: {self.solver.NumConflicts()}")
+            raise Exception("The problem was proven infeasible.")
 
         elif status == cp_model.MODEL_INVALID:
             logger.info("The given model didn't pass the validation step.")
@@ -121,9 +122,17 @@ class Model:
             self.validateInput()
             
             logger.info(f"Number of conflicts: {self.solver.NumConflicts()}")
+            raise Exception("The given model didn't pass the validation step.")
 
         elif status == cp_model.UNKNOWN:
             logger.info("The status of the model is unknown because a search limit was reached.")
+
+            raise Exception("The status of the model is unknown because a search limit was reached.")
+
+        else:
+            logger.info("The model is not solved.")
+            logger.info(f"Number of conflicts: {self.solver.NumConflicts()}")
+            raise Exception("The model is not solved.")
 
     def setModelInput(self, model_input):
         """Function that sets the model input object.

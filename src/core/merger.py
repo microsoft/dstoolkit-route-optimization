@@ -21,7 +21,7 @@ class ResultMerger:
         """
 
         if not optimized:
-            return pd.concat(model_result_list)
+            return pd.concat([df for df in model_result_list if not df.empty])
         else:
             return self.optimize(model_input, model_result_list)
 

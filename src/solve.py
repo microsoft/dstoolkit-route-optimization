@@ -8,16 +8,17 @@ import pandas as pd
 from core.structure import *
 from core.model import *
 
-parser = argparse.ArgumentParser("solve")
-parser.add_argument('--distance', type=str, help="the distance file")
-
-args, _ = parser.parse_known_args()
-distance_file = args.distance
-
-print(f'Distance file: {distance_file}')
 
 def init():
-    pass 
+    global distance_file
+
+    parser = argparse.ArgumentParser("solve")
+    parser.add_argument('--distance', type=str, help="the distance file")
+
+    args, _ = parser.parse_known_args()
+    distance_file = args.distance
+
+    print(f'Distance file: {distance_file}') 
 
 def run(input_data):
     print(f'ParallelRun input data: {input_data}')
@@ -40,3 +41,5 @@ def run(input_data):
         results.append(model.getModelResult().toScheduleDF())
     
     return pd.concat(results)
+    
+

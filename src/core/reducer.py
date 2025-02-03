@@ -177,7 +177,7 @@ class SearchSpaceReducer:
                             # Cannot put this one since it has differnet danger type
                             if package.danger_type not in danger_types:
                                 continue
-                            # Same danger type with the current packages, can put into the same truch by danger type constraint
+                            # Same danger type with the current packages, can put into the same truck by danger type constraint
                             else:
                                 # The gap of the available time is too big, cannot put into the same truck
                                 if abs(package.available_time-min_available_time) > model_input.max_time_difference_between_package:

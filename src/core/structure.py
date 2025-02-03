@@ -169,8 +169,14 @@ class ModelInput:
             package.item_id = row['Item_ID']
             package.source = row['Source']
             package.destination = row['Destination']
-            package.available_time = int(datetime.timestamp(datetime.strptime(row['Available_Time'], '%Y-%m-%d %H:%M:%S')))
-            package.deadline = int(datetime.timestamp(datetime.strptime(row['Deadline'], '%Y-%m-%d %H:%M:%S')))
+            try:
+                package.available_time = int(datetime.timestamp(datetime.strptime(row['Available_Time'], '%Y-%m-%d %H:%M:%S')))
+            except ValueError:
+                package.available_time = int(datetime.timestamp(datetime.strptime(row['Available_Time'], '%Y-%m-%d')))
+            try:
+                package.deadline = int(datetime.timestamp(datetime.strptime(row['Deadline'], '%Y-%m-%d %H:%M:%S')))
+            except ValueError:
+                package.deadline = int(datetime.timestamp(datetime.strptime(row['Deadline'], '%Y-%m-%d')))
             package.danger_type = row['Danger_Type']
             package.area = row['Area']
             package.weight = row['Weight']
@@ -308,7 +314,7 @@ class ModelInput:
         else:
             distance_df = distance
 
-        distance_matrix_raw = distance_df.pivot('Source', 'Destination', 'Distance(M)')
+        distance_matrix_raw = distance_df.pivot(index='Source', columns='Destination', values='Distance(M)')
         assert(distance_matrix_raw.shape[0] == distance_matrix_raw.shape[1])
 
         distance_matrix = distance_matrix_raw.copy()

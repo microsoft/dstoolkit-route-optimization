@@ -1,7 +1,3 @@
-azureml-sdk[notebooks]==1.45.0
-azureml-pipeline-core==1.45.0
-azureml-pipeline-steps==1.45.0
-nose2==0.12.0
-python-dotenv==0.21.0
-pandas==1.4.3
-ortools==9.3.10497
+python-dotenv==1.0.1
+azure-ai-ml==1.23.1
+ortools==9.11.4210

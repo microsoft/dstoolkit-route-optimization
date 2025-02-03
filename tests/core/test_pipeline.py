@@ -14,7 +14,7 @@ class PipelineTest(unittest.TestCase):
 
     def test_pipeline(self):
 
-        order_file = os.path.join(work_dir, "../../sample_data/order_small.csv")
+        order_file = os.path.join(work_dir, "../../sample_data/order_large.csv")
         distance_file = os.path.join(work_dir, "../../sample_data/distance.csv")
 
         tmp_folder = os.path.join(work_dir, "../../tmp")
@@ -77,7 +77,7 @@ class PipelineTest(unittest.TestCase):
             model.createVariables()
             model.setConstraints()
             model.setObjective(objective="Cost")
-            model.solve()
+            model.solve(max_time_in_seconds=60)
 
             model_result = model.getModelResult()
             
